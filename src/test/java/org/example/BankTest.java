@@ -5,7 +5,6 @@ import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class BankTest {
-
     public static Account a1, a2, a3, a4, a5;
     public static Bank bank;
     public static Transaction t1, t2, t3;
