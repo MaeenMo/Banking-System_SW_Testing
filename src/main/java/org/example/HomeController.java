@@ -45,29 +45,29 @@ public class HomeController {
     @FXML
     Label usernameDisplay;
     @FXML
-    Label typeDisplay;
+    Label accNoDisplay;
     @FXML
     Pane homePane;
     @FXML
     Pane mainPane;
-    @FXML
-    Pane settingsPane;
-    @FXML
-    GridPane gridPane;
+//    @FXML
+//    Pane settingsPane;
+//    @FXML
+//    GridPane gridPane;
     @FXML
     HBox settingsBtns;
     @FXML
-    Pane adduserPane;
+    Pane depositPane;
     @FXML
-    Pane addbookPane;
+    Pane withdrawPane;
     @FXML
-    Pane bookOL;
+    Pane transferPane;
     @FXML
-    JFXButton booksBtn;
+    JFXButton withdrawBtn;
     @FXML
-    JFXButton usersBtn;
+    JFXButton depositBtn;
     @FXML
-    TextField searchField;
+    TextField transferBtn;
     @FXML
     JFXButton searchBtn;
     @FXML
@@ -154,12 +154,7 @@ public class HomeController {
     @FXML
     Button logoutBtn;
     Scene loginScene;
-//    Librarian librarian = new Librarian();
-//    Book book = new Book();
     boolean visible = false;
-    static boolean inBooks = true;
-    static boolean userExist = false;
-    static boolean bookExist = false;
     @FXML
     public void closeWindow(){
         System.exit(0);
@@ -182,56 +177,17 @@ public class HomeController {
 //        usersIco.setVisible(!User.getType().equals("Reader"));
     }
     public void displayBooks(){
-//        setvisible("main");
-//        booksBtn.getStyleClass().add("selected");
-//        clearFields();
-//        searchField.setPromptText("Search For Books");
-//        bookListview.setVisible(true);
-//        inBooks = true;
-//        search.viewallBooks();
-//        bookListview.setItems(user.searchBooks());
-//        hboxCell(bookListview,"Rent");
-//        bookListview.setClip(roundedListview(957,548));
+
     }
     public void displayUsers(){
-//        setvisible("main");
-//        usersBtn.getStyleClass().add("selected");
-//        clearFields();
-//        searchField.setPromptText("Search For Users");
-//        userListview.setVisible(true);
-//        inBooks = false;
-//        search.viewallUsers();
-//        userListview.setItems(librarian.searchUsers());
-//        hboxCell(userListview,"Edit");
-//        userEdited.setText("");
-//        userListview.setClip(roundedListview(957,548));
+
     }
     public void back(){
         settingsPane.setVisible(false);
         setvisible("none");
         displayUsers();
     }
-    public void search(){
-//        if (inBooks){
-//            search.searchforBooks(searchField.getText());
-//            if (search.i==0) {
-//                bookListview.setItems(user.searchBooks());
-//                hboxCell(bookListview,"Rent");
-//            }else searchResult(bookListview);
-//        }else {
-//            search.searchforUsers(searchField.getText());
-//            if (search.i==0) {
-//                userListview.setItems(librarian.searchUsers());
-//                hboxCell(userListview,"Edit");
-//            }else searchResult(userListview);
-//        }
-    }
-    public void searchResult(ListView<HBoxCell> listView){
-//        ArrayList<HBoxCell> list = new ArrayList<>();
-//        list.add(new HBoxCell(search.result));
-//        ObservableList<HBoxCell> myObservableList = FXCollections.observableList(list);
-//        listView.setItems(myObservableList);
-    }
+
     public void settings(){
         setvisible("settings");
         settingsBtn.getStyleClass().add("selected");
@@ -314,18 +270,6 @@ public class HomeController {
 //                }
 //            }
 //        }
-    }
-    public void orderList(){
-//        clearFields();
-//        setvisible("settings");
-//        bookOL.setVisible(true);
-//        olListview.setItems(librarian.bookList());
-//        olListview.setClip(roundedListview(957,463));
-//        hboxCell(olListview);
-//        settingsBtn.getStyleClass().add("selected");
-//        addUserBtn.getStyleClass().remove("selected");
-//        addBookBtn.getStyleClass().remove("selected");
-//        bookOLBtn.getStyleClass().add("selected");
     }
     private void clearFields() {
         searchField.clear();
