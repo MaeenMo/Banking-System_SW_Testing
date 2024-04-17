@@ -21,10 +21,10 @@ public class Main extends Application {
         mainStage.show();
     }
     public void mainSetup(){
-        MainStage.setTitle("Library System - Login");
+        MainStage.setTitle("Bank System - Login");
 
         MainStage.setResizable(false);
-        MainStage.getIcons().add(new Image(Main.class.getResourceAsStream("online-library.png")));
+        MainStage.getIcons().add(new Image(Main.class.getResourceAsStream("BankIco.png")));
 
         loginWindow();
         MainStage.setScene(loginScene);

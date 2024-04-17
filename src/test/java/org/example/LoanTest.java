@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class LoanTest {
     static Loan loan;
+    static Loan loanFail;
     static Account account;
 
     @BeforeAll
@@ -14,8 +15,9 @@ public class LoanTest {
         System.out.println("\n-----------------------");
         System.out.println("Loan Class Test Started");
         System.out.println("-----------------------\n");
-        account = new Account("1", "Joe", 0, "12345");
-        loan = new Loan("1", 5000,account );
+        account = new Account("1", "Joe", 1000, "12345");
+        loan = new Loan("1", 5000,account, 15, 5);
+        loanFail = new Loan("2", 10000,account,10,3 );
     }
 
     @AfterAll
@@ -27,27 +29,33 @@ public class LoanTest {
 
     @Test
     @Order(1)
-    void testApplyForLoan() {
+    void testDisburseSuccessLoan() {
+        double oldBalance = account.getBalance();
         loan.disburseLoan();
-        assertEquals(5000, loan.getLoanAmount());
+        assertEquals(account.getBalance(), loan.getLoanAmount()+oldBalance);
     }
 
     @Test
     @Order(2)
-    void testRepayLoan() {
-        loan.makePayment(2000);
-        assertEquals(3000, loan.getLoanAmount());
+    void testPaySuccessLoan() {
+        double oldBalance = account.getBalance();
+        loan.makePayment();
+        assertEquals(account.getBalance(), oldBalance - (loan.getLoanAmount() + (loan.getLoanAmount()*(loan.getInterestRate()/100))));
     }
 
     @Test
     @Order(3)
-    void testRepayMoreThanLoanBalance() {
-        loan.makePayment(4000);
-        assertFalse(loan.getLoanAmount()==0);
+    void testDisburseFailLoan() {
+        double oldBalance = account.getBalance();
+        loanFail.disburseLoan();
+        loanFail.setStartYear(2020);
+        assertEquals(account.getBalance(), loanFail.getLoanAmount()+oldBalance);
     }
     @Test
     @Order(4)
-    void testReturnLoanAmount() {
-        assertEquals(3000, loan.getLoanAmount());
+    void testPayFailLoan() {
+        double oldBalance = account.getBalance();
+        loanFail.makePayment();
+        assertFalse(account.getBalance() == oldBalance-loanFail.getLoanAmount());
     }
 }

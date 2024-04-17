@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXComboBox?>
 <?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
@@ -86,7 +88,7 @@
                   <Image url="@side-menu.png" />
                </image>
             </ImageView>
-            <JFXButton fx:id="booksBtn" alignment="TOP_LEFT" graphicTextGap="16.0" layoutX="11.0" layoutY="224.0" onAction="#displayBooks" prefHeight="50.0" prefWidth="234.0" styleClass="menuBtn" text="Transaction" textFill="WHITE">
+            <JFXButton fx:id="transactionBtn" alignment="TOP_LEFT" graphicTextGap="16.0" layoutX="11.0" layoutY="224.0" onAction="#displayTransactionsMenu" prefHeight="50.0" prefWidth="234.0" styleClass="menuBtn" text="Transaction" textFill="WHITE">
                <font>
                   <Font name="System Bold" size="20.0" />
                </font>
@@ -122,7 +124,7 @@
                </cursor>
             </JFXButton>
             <Line endX="100.0" layoutX="128.0" layoutY="287.0" startX="-100.0" stroke="WHITE" strokeLineCap="ROUND" strokeWidth="3.0" />
-            <JFXButton fx:id="usersBtn" alignment="TOP_LEFT" graphicTextGap="30.0" layoutX="11.0" layoutY="302.0" onAction="#displayUsers" prefHeight="51.0" prefWidth="234.0" styleClass="menuBtn" text="Loan" textFill="WHITE">
+            <JFXButton fx:id="loanBtn" alignment="TOP_LEFT" graphicTextGap="30.0" layoutX="11.0" layoutY="302.0" onAction="#displayLoanMenu" prefHeight="51.0" prefWidth="234.0" styleClass="menuBtn" text="Loan" textFill="WHITE">
                <font>
                   <Font name="System Bold" size="20.0" />
                </font>
@@ -177,7 +179,7 @@
                </font>
             </Label>
          </children></Pane>
-      <Pane fx:id="settingsPane" layoutX="256.0" layoutY="66.0" prefHeight="654.0" prefWidth="1024.0" style="-fx-background-color: lightgrey; -fx-background-radius: 0 0 20 0;" visible="false">
+      <Pane fx:id="TransactionsPane" layoutX="256.0" layoutY="66.0" prefHeight="654.0" prefWidth="1024.0" style="-fx-background-color: lightgrey; -fx-background-radius: 0 0 20 0;">
          <children>
             <HBox alignment="CENTER" layoutY="16.0" prefHeight="129.0" prefWidth="1024.0">
                <children>
@@ -193,21 +195,9 @@
                   </Text>
                </children>
             </HBox>
-            <VBox alignment="CENTER" layoutY="153.0" prefHeight="479.0" prefWidth="1024.0" spacing="60.0" visible="false">
+            <VBox fx:id="transactionMenu" alignment="CENTER" layoutY="153.0" prefHeight="479.0" prefWidth="1024.0" spacing="60.0" visible="false">
                <children>
-                  <JFXButton fx:id="addUserBtn" onAction="#newUser" prefHeight="110.0" prefWidth="280.0" style="-fx-background-color: dodgerblue;" styleClass="settingsBtn" text=" Withdraw" textFill="WHITE">
-                     <graphic>
-                        <ImageView fitHeight="46.0" fitWidth="48.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@withdraw.png" />
-                           </image>
-                        </ImageView>
-                     </graphic>
-                     <font>
-                        <Font size="38.0" />
-                     </font>
-                  </JFXButton>
-                  <JFXButton fx:id="addBookBtn" onAction="#newBook" prefHeight="110.0" prefWidth="280.0" style="-fx-background-color: dodgerblue;" styleClass="settingsBtn" text="  Deposit" textFill="WHITE">
+                  <JFXButton fx:id="depositBtn1" onAction="#depositView" prefHeight="110.0" prefWidth="280.0" style="-fx-background-color: dodgerblue;" styleClass="settingsBtn" text="  Deposit" textFill="WHITE">
                      <graphic>
                         <ImageView fitHeight="46.0" fitWidth="48.0" pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -219,7 +209,19 @@
                         <Font size="38.0" />
                      </font>
                   </JFXButton>
-                  <JFXButton fx:id="bookOLBtn" onAction="#orderList" prefHeight="110.0" prefWidth="280.0" style="-fx-background-color: dodgerblue;" styleClass="settingsBtn" text="  Transfer" textFill="WHITE">
+                  <JFXButton fx:id="withdrawBtn1" onAction="#withdrawView" prefHeight="110.0" prefWidth="280.0" style="-fx-background-color: dodgerblue;" styleClass="settingsBtn" text=" Withdraw" textFill="WHITE">
+                     <graphic>
+                        <ImageView fitHeight="46.0" fitWidth="48.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@withdraw.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                     <font>
+                        <Font size="38.0" />
+                     </font>
+                  </JFXButton>
+                  <JFXButton fx:id="trasnferBtn1" onAction="#transferView" prefHeight="110.0" prefWidth="280.0" style="-fx-background-color: dodgerblue;" styleClass="settingsBtn" text="  Transfer" textFill="WHITE">
                      <graphic>
                         <ImageView fitHeight="46.0" fitWidth="48.0" pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -233,9 +235,9 @@
                   </JFXButton>
                </children>
             </VBox>
-            <Pane fx:id="adduserPane" layoutY="160.0" prefHeight="491.0" prefWidth="1024.0" visible="false">
+            <Pane fx:id="DepositPane" layoutY="160.0" prefHeight="491.0" prefWidth="1024.0" visible="false">
                <children>
-                  <JFXButton fx:id="addBtn1" layoutX="426.0" layoutY="331.0" onAction="#saveUser" prefHeight="56.0" prefWidth="175.0" style="-fx-background-color: dodgerblue;" styleClass="settingsBtn" text="Deposit" textFill="WHITE">
+                  <JFXButton fx:id="depositBtn2" layoutX="426.0" layoutY="331.0" onAction="#deposit" prefHeight="56.0" prefWidth="175.0" style="-fx-background-color: dodgerblue;" styleClass="settingsBtn" text="Deposit" textFill="WHITE">
                      <font>
                         <Font size="24.0" />
                      </font>
@@ -250,12 +252,12 @@
                         <Font size="23.0" />
                      </font>
                   </Label>
-                  <TextField layoutX="368.0" layoutY="215.0" prefHeight="35.0" prefWidth="299.0" promptText="Amount" style="-fx-border-radius: 20; -fx-background-radius: 20;">
+                  <TextField fx:id="depAmount" layoutX="368.0" layoutY="215.0" prefHeight="35.0" prefWidth="299.0" promptText="Amount" style="-fx-border-radius: 20; -fx-background-radius: 20;">
                      <font>
                         <Font size="19.0" />
                      </font>
                   </TextField>
-                  <Text fill="#185137" layoutX="403.0" layoutY="304.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Successfully Deposited!">
+                  <Text fx:id="depErrMsg" fill="#185137" layoutX="509.0" layoutY="307.0" strokeType="OUTSIDE" strokeWidth="0.0">
                      <font>
                         <Font name="System Bold" size="20.0" />
                      </font>
@@ -265,11 +267,16 @@
                         <Image url="@depositIcon.png" />
                      </image>
                   </ImageView>
+                  <JFXButton fx:id="depositBackBtn" layoutX="851.0" layoutY="389.0" onAction="#back" prefHeight="56.0" prefWidth="126.0" style="-fx-background-color: dodgerblue;" styleClass="settingsBtn" text="&lt;-Back" textFill="WHITE">
+                     <font>
+                        <Font size="24.0" />
+                     </font>
+                  </JFXButton>
                </children>
             </Pane>
-            <Pane fx:id="adduserPane1" layoutY="160.0" prefHeight="491.0" prefWidth="1024.0" visible="false">
+            <Pane fx:id="withdrawPane" layoutY="160.0" prefHeight="491.0" prefWidth="1024.0" visible="false">
                <children>
-                  <JFXButton fx:id="addBtn11" layoutX="426.0" layoutY="331.0" onAction="#saveUser" prefHeight="56.0" prefWidth="175.0" style="-fx-background-color: dodgerblue;" styleClass="settingsBtn" text="Withdraw" textFill="WHITE">
+                  <JFXButton fx:id="withdrawBtn2" layoutX="426.0" layoutY="331.0" onAction="#withdraw" prefHeight="56.0" prefWidth="175.0" style="-fx-background-color: dodgerblue;" styleClass="settingsBtn" text="Withdraw" textFill="WHITE">
                      <font>
                         <Font size="24.0" />
                      </font>
@@ -284,12 +291,12 @@
                         <Font size="23.0" />
                      </font>
                   </Label>
-                  <TextField layoutX="368.0" layoutY="215.0" prefHeight="35.0" prefWidth="299.0" promptText="Amount" style="-fx-border-radius: 20; -fx-background-radius: 20;">
+                  <TextField fx:id="withAmount" layoutX="368.0" layoutY="215.0" prefHeight="35.0" prefWidth="299.0" promptText="Amount" style="-fx-border-radius: 20; -fx-background-radius: 20;">
                      <font>
                         <Font size="19.0" />
                      </font>
                   </TextField>
-                  <Text fill="#185137" layoutX="403.0" layoutY="304.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Successfully Withdrawn!">
+                  <Text fx:id="withErrMsg" fill="#185137" layoutX="515.0" layoutY="308.0" strokeType="OUTSIDE" strokeWidth="0.0">
                      <font>
                         <Font name="System Bold" size="20.0" />
                      </font>
@@ -299,16 +306,21 @@
                         <Image url="@withdrawIcon.png" />
                      </image>
                   </ImageView>
+                  <JFXButton fx:id="withdarBackBtn" layoutX="851.0" layoutY="389.0" onAction="#back" prefHeight="56.0" prefWidth="126.0" style="-fx-background-color: dodgerblue;" styleClass="settingsBtn" text="&lt;-Back" textFill="WHITE">
+                     <font>
+                        <Font size="24.0" />
+                     </font>
+                  </JFXButton>
                </children>
             </Pane>
-            <Pane fx:id="adduserPane2" layoutY="160.0" prefHeight="491.0" prefWidth="1024.0">
+            <Pane fx:id="adduserPane2" layoutY="160.0" prefHeight="491.0" prefWidth="1024.0" visible="false">
                <children>
                   <Label fx:id="userAdded" alignment="CENTER_RIGHT" contentDisplay="BOTTOM" layoutX="661.0" layoutY="465.0" prefHeight="27.0" prefWidth="196.0" textFill="LIMEGREEN" wrapText="true">
                      <font>
                         <Font size="18.0" />
                      </font>
                   </Label>
-                  <JFXButton fx:id="addBtn12" layoutX="421.0" layoutY="325.0" onAction="#saveUser" prefHeight="56.0" prefWidth="186.0" style="-fx-background-color: dodgerblue;" styleClass="settingsBtn" text="Transfer" textFill="WHITE">
+                  <JFXButton fx:id="transferBtn2" layoutX="421.0" layoutY="325.0" onAction="#transfer" prefHeight="56.0" prefWidth="186.0" style="-fx-background-color: dodgerblue;" styleClass="settingsBtn" text="Transfer" textFill="WHITE">
                      <font>
                         <Font size="24.0" />
                      </font>
@@ -323,12 +335,12 @@
                         <Font size="23.0" />
                      </font>
                   </Label>
-                  <TextField layoutX="161.0" layoutY="209.0" prefHeight="35.0" prefWidth="299.0" promptText="Amount" style="-fx-border-radius: 20; -fx-background-radius: 20;">
+                  <TextField fx:id="transferAmount" layoutX="161.0" layoutY="209.0" prefHeight="35.0" prefWidth="299.0" promptText="Amount" style="-fx-border-radius: 20; -fx-background-radius: 20;">
                      <font>
                         <Font size="19.0" />
                      </font>
                   </TextField>
-                  <Text fill="#185137" layoutX="395.0" layoutY="298.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Successfully Transferred!">
+                  <Text fill="#185137" layoutX="509.0" layoutY="302.0" strokeType="OUTSIDE" strokeWidth="0.0">
                      <font>
                         <Font name="System Bold" size="20.0" />
                      </font>
@@ -343,28 +355,139 @@
                         <Font size="23.0" />
                      </font>
                   </Label>
-                  <TextField layoutX="568.0" layoutY="208.0" prefHeight="35.0" prefWidth="299.0" promptText="Account Number" style="-fx-border-radius: 20; -fx-background-radius: 20;">
+                  <TextField fx:id="destinationAcc" layoutX="568.0" layoutY="208.0" prefHeight="35.0" prefWidth="299.0" promptText="Account Number" style="-fx-border-radius: 20; -fx-background-radius: 20;">
                      <font>
                         <Font size="19.0" />
                      </font>
                   </TextField>
-                  <JFXButton fx:id="backBtn" layoutX="851.0" layoutY="389.0" onAction="#back" prefHeight="56.0" prefWidth="126.0" style="-fx-background-color: dodgerblue;" styleClass="settingsBtn" text="&lt;-Back" textFill="WHITE">
+                  <JFXButton fx:id="transferBackBtn" layoutX="851.0" layoutY="389.0" onAction="#back" prefHeight="56.0" prefWidth="126.0" style="-fx-background-color: dodgerblue;" styleClass="settingsBtn" text="&lt;-Back" textFill="WHITE">
                      <font>
                         <Font size="24.0" />
                      </font>
                   </JFXButton>
                </children>
             </Pane>
-            <Label fx:id="userEdited" alignment="CENTER_RIGHT" contentDisplay="BOTTOM" layoutX="610.0" layoutY="585.0" prefHeight="27.0" prefWidth="248.0" textFill="LIMEGREEN" wrapText="true">
-               <font>
-                  <Font size="18.0" />
-               </font>
-            </Label>
-            <JFXButton fx:id="saveBtn" layoutX="870.0" layoutY="570.0" onAction="#saveUser" prefHeight="56.0" prefWidth="126.0" style="-fx-background-color: dodgerblue;" styleClass="settingsBtn" text="Save" textFill="WHITE" visible="false">
-               <font>
-                  <Font size="24.0" />
-               </font>
-            </JFXButton>
+         </children>
+      </Pane>
+      <Pane fx:id="loanPane" layoutX="256.0" layoutY="66.0" prefHeight="654.0" prefWidth="1024.0" style="-fx-background-color: lightgrey; -fx-background-radius: 0 0 20 0;">
+         <children>
+            <HBox alignment="CENTER" layoutY="16.0" prefHeight="129.0" prefWidth="1024.0">
+               <children>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-weight: bold;" text="Current Balance:" textAlignment="CENTER" wrappingWidth="420.5367431640625">
+                     <font>
+                        <Font size="50.0" />
+                     </font>
+                  </Text>
+                  <Text fx:id="accBalance" strokeType="OUTSIDE" strokeWidth="0.0" textAlignment="CENTER" wrappingWidth="308.53662109375">
+                     <font>
+                        <Font size="50.0" />
+                     </font>
+                  </Text>
+               </children>
+            </HBox>
+            <VBox fx:id="loanMenu" alignment="CENTER" layoutY="153.0" prefHeight="479.0" prefWidth="1024.0" spacing="60.0" visible="false">
+               <children>
+                  <JFXButton fx:id="disbusreLoanBtn1" graphicTextGap="16.0" onAction="#disburseloanView" prefHeight="110.0" prefWidth="360.0" style="-fx-background-color: dodgerblue;" styleClass="settingsBtn" text="Disburse Loan" textFill="WHITE">
+                     <graphic>
+                        <ImageView fitHeight="46.0" fitWidth="48.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@loan-disbursement-transparent.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                     <font>
+                        <Font size="38.0" />
+                     </font>
+                  </JFXButton>
+                  <JFXButton fx:id="viewLoanBtn1" graphicTextGap="16.0" onAction="#viewLoansView" prefHeight="110.0" prefWidth="360.0" style="-fx-background-color: dodgerblue;" styleClass="settingsBtn" text="View Loans" textFill="WHITE">
+                     <graphic>
+                        <ImageView fitHeight="46.0" fitWidth="48.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@credit.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                     <font>
+                        <Font size="38.0" />
+                     </font>
+                  </JFXButton>
+               </children>
+            </VBox>
+            <Pane fx:id="disburseLoanPane" layoutY="160.0" prefHeight="491.0" prefWidth="1024.0" style="-fx-background-color: lightgrey; -fx-background-radius: 0 0 20 0;" visible="false">
+               <children>
+                  <Label fx:id="userAdded11" alignment="CENTER_RIGHT" contentDisplay="BOTTOM" layoutX="661.0" layoutY="465.0" prefHeight="27.0" prefWidth="196.0" textFill="LIMEGREEN" wrapText="true">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Label>
+                  <JFXButton fx:id="disburseLoanBtn2" layoutX="419.0" layoutY="355.0" onAction="#disburseLoan" prefHeight="56.0" prefWidth="186.0" style="-fx-background-color: dodgerblue;" styleClass="settingsBtn" text="Take Loan" textFill="WHITE">
+                     <font>
+                        <Font size="24.0" />
+                     </font>
+                  </JFXButton>
+                  <Label layoutX="400.0" layoutY="30.0" text="Disburse Loan">
+                     <font>
+                        <Font name="System Bold" size="51.0" />
+                     </font>
+                  </Label>
+                  <Label layoutX="443.0" layoutY="139.0" text="Loan Amount">
+                     <font>
+                        <Font size="23.0" />
+                     </font>
+                  </Label>
+                  <Text fx:id="disburseErrMsg" fill="#185137" layoutX="508.0" layoutY="293.0" strokeType="OUTSIDE" strokeWidth="0.0">
+                     <font>
+                        <Font name="System Bold" size="20.0" />
+                     </font>
+                  </Text>
+                  <TextField fx:id="paidAmount2" layoutX="363.0" layoutY="193.0" prefHeight="35.0" prefWidth="299.0" promptText="Enter Amount of Loan To Take" style="-fx-border-radius: 20; -fx-background-radius: 20;">
+                     <font>
+                        <Font size="19.0" />
+                     </font>
+                  </TextField>
+                  <ImageView fitHeight="95.0" fitWidth="95.0" layoutX="287.0" layoutY="20.0">
+                     <image>
+                        <Image url="@loan-disbursement-transparent.png" />
+                     </image>
+                  </ImageView>
+                  <JFXButton fx:id="disburseBackBtn" layoutX="851.0" layoutY="389.0" onAction="#back" prefHeight="56.0" prefWidth="126.0" style="-fx-background-color: dodgerblue;" styleClass="settingsBtn" text="&lt;-Back" textFill="WHITE">
+                     <font>
+                        <Font size="24.0" />
+                     </font>
+                  </JFXButton>
+                  <JFXComboBox fx:id="takenLoan" layoutX="367.0" layoutY="263.0" prefHeight="44.0" prefWidth="299.0" promptText="               Choose Loan" />
+               </children>
+            </Pane>
+            <Pane fx:id="viewLoansPane" layoutY="160.0" prefHeight="491.0" prefWidth="1024.0" style="-fx-background-color: lightgrey; -fx-background-radius: 0 0 20 0;">
+               <children>
+                  <Label fx:id="userAdded1" alignment="CENTER_RIGHT" contentDisplay="BOTTOM" layoutX="661.0" layoutY="465.0" prefHeight="27.0" prefWidth="196.0" textFill="LIMEGREEN" wrapText="true">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Label>
+                  <Text fx:id="payLoanErrMsg" fill="#185137" layoutX="511.0" layoutY="291.0" strokeType="OUTSIDE" strokeWidth="0.0">
+                     <font>
+                        <Font name="System Bold" size="20.0" />
+                     </font>
+                  </Text>
+                  <JFXButton fx:id="payLoanBackBtn" layoutX="875.0" layoutY="18.0" onAction="#back" prefHeight="56.0" prefWidth="126.0" style="-fx-background-color: dodgerblue;" styleClass="settingsBtn" text="&lt;-Back" textFill="WHITE">
+                     <font>
+                        <Font size="24.0" />
+                     </font>
+                  </JFXButton>
+                  <ListView fx:id="olListview" layoutX="20.0" layoutY="96.0" prefHeight="380.0" prefWidth="985.0" style="-fx-background-radius: 10; -fx-focus-color: transparent; -fx-faint-focus-color: transparent; -fx-selection-bar: grey;" />
+                  <ImageView fitHeight="65.0" fitWidth="65.0" layoutX="20.0" layoutY="13.0">
+                     <image>
+                        <Image url="@credit.png" />
+                     </image>
+                  </ImageView>
+                  <Label alignment="CENTER" layoutX="86.0" layoutY="14.0" prefHeight="62.0" prefWidth="246.0" text="Your Loans" wrapText="true">
+                     <font>
+                        <Font name="System Bold" size="42.0" />
+                     </font>
+                  </Label>
+               </children>
+            </Pane>
          </children>
       </Pane>
    </children>

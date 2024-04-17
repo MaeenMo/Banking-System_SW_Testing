@@ -5,6 +5,7 @@ import com.jfoenix.controls.JFXCheckBox;
 import com.jfoenix.controls.JFXComboBox;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
@@ -183,7 +184,7 @@ public class HomeController {
 
     }
     public void back(){
-        settingsPane.setVisible(false);
+//        settingsPane.setVisible(false);
         setvisible("none");
         displayUsers();
     }
@@ -203,8 +204,8 @@ public class HomeController {
         showIco.setVisible(true);
         hideIco.setVisible(true);
         showPassBtn.setVisible(true);
-        adduserPane.setVisible(true);
-        gridPane.setVisible(true);
+//        adduserPane.setVisible(true);
+//        gridPane.setVisible(true);
         userAdded.setVisible(true);
         addBtn1.setVisible(true);
     }
@@ -242,7 +243,7 @@ public class HomeController {
     public void newBook(){
         clearFields();
         setvisible("settings");
-        addbookPane.setVisible(true);
+//        addbookPane.setVisible(true);
         settingsBtn.getStyleClass().add("selected");
         addUserBtn.getStyleClass().remove("selected");
         addBookBtn.getStyleClass().add("selected");
@@ -272,7 +273,7 @@ public class HomeController {
 //        }
     }
     private void clearFields() {
-        searchField.clear();
+//        searchField.clear();
         userNameField.clear();
         type.getSelectionModel().clearSelection();
         passField.clear();
@@ -493,6 +494,39 @@ public class HomeController {
 //        }
     }
 
+    public void displayTransactionsMenu(ActionEvent actionEvent) {
+    }
+
+    public void displayLoanMenu(ActionEvent actionEvent) {
+    }
+
+    public void depositView(ActionEvent actionEvent) {
+    }
+
+    public void withdrawView(ActionEvent actionEvent) {
+    }
+
+    public void transferView(ActionEvent actionEvent) {
+    }
+
+    public void deposit(ActionEvent actionEvent) {
+    }
+
+    public void disburseLoan(ActionEvent actionEvent) {
+    }
+
+    public void withdraw(ActionEvent actionEvent) {
+    }
+
+    public void transfer(ActionEvent actionEvent) {
+    }
+
+    public void viewLoansView(ActionEvent actionEvent) {
+    }
+
+    public void disburseloanView(ActionEvent actionEvent) {
+    }
+
     public static class HBoxCell extends HBox {
         Label text = new Label();
         Label text1 = new Label();
@@ -594,26 +628,26 @@ public class HomeController {
     private void setvisible(String window){
         switch (window) {
             case "settings" -> {
-                settingsPane.setVisible(true);
+//                settingsPane.setVisible(true);
                 settingsBtns.setVisible(true);
-                adduserPane.setVisible(false);
-                gridPane.setVisible(false);
-                addbookPane.setVisible(false);
+//                adduserPane.setVisible(false);
+//                gridPane.setVisible(false);
+//                addbookPane.setVisible(false);
                 userAdded.setVisible(false);
                 addBtn1.setVisible(false);
                 saveBtn.setVisible(false);
                 blockedCB.setVisible(false);
                 backBtn.setVisible(false);
                 userEdited.setVisible(false);
-                bookOL.setVisible(false);
+//                bookOL.setVisible(false);
                 mainPane.setVisible(false);
                 showPassBtn.setVisible(false);
                 showIco.setVisible(false);
                 hideIco.setVisible(false);
                 showPassBtn.setVisible(false);
                 passFieldShown.setVisible(false);
-                booksBtn.getStyleClass().remove("selected");
-                usersBtn.getStyleClass().remove("selected");
+//                booksBtn.getStyleClass().remove("selected");
+//                usersBtn.getStyleClass().remove("selected");
                 settingsBtn.getStyleClass().remove("selected");
                 addUserBtn.getStyleClass().remove("selected");
                 addBookBtn.getStyleClass().remove("selected");
@@ -621,17 +655,17 @@ public class HomeController {
             }
             case "main" -> {
                 mainPane.setVisible(true);
-                searchField.setVisible(true);
+//                searchField.setVisible(true);
                 searchBtn.setVisible(true);
                 bookListview.setVisible(false);
                 userListview.setVisible(false);
-                settingsPane.setVisible(false);
+//                settingsPane.setVisible(false);
                 showPassBtn.setVisible(false);
                 showIco.setVisible(false);
                 hideIco.setVisible(false);
                 showPassBtn.setVisible(false);
-                booksBtn.getStyleClass().remove("selected");
-                usersBtn.getStyleClass().remove("selected");
+//                booksBtn.getStyleClass().remove("selected");
+//                usersBtn.getStyleClass().remove("selected");
                 settingsBtn.getStyleClass().remove("selected");
                 addUserBtn.getStyleClass().remove("selected");
                 addBookBtn.getStyleClass().remove("selected");
@@ -639,18 +673,18 @@ public class HomeController {
             }
             case "edit" -> {
                 mainPane.setVisible(false);
-                settingsPane.setVisible(true);
+//                settingsPane.setVisible(true);
                 settingsBtns.setVisible(false);
-                adduserPane.setVisible(true);
-                addbookPane.setVisible(false);
-                gridPane.setVisible(true);
+//                adduserPane.setVisible(true);
+//                addbookPane.setVisible(false);
+//                gridPane.setVisible(true);
                 userAdded.setVisible(false);
                 addBtn1.setVisible(false);
                 saveBtn.setVisible(true);
                 blockedCB.setVisible(true);
                 backBtn.setVisible(true);
                 userEdited.setVisible(true);
-                bookOL.setVisible(false);
+//                bookOL.setVisible(false);
                 showPassBtn.setVisible(false);
                 showIco.setVisible(false);
                 hideIco.setVisible(false);
@@ -658,9 +692,9 @@ public class HomeController {
             }
             case "none" -> {
                 mainPane.setVisible(false);
-                settingsPane.setVisible(false);
-                booksBtn.getStyleClass().remove("selected");
-                usersBtn.getStyleClass().remove("selected");
+//                settingsPane.setVisible(false);
+//                booksBtn.getStyleClass().remove("selected");
+//                usersBtn.getStyleClass().remove("selected");
                 settingsBtn.getStyleClass().remove("selected");
                 addUserBtn.getStyleClass().remove("selected");
                 addBookBtn.getStyleClass().remove("selected");
@@ -699,30 +733,30 @@ public class HomeController {
 //        userListview.setVisible(false);
 //        bookOL.setVisible(false);
 //        type.getItems().addAll("Librarian","Reader");
-//        anchorPane.setOnMousePressed(event -> {
-//            xOffset = event.getSceneX();
-//            yOffset = event.getSceneY();
-//        });
-//        hbox.setOnMouseDragged(event -> {
-//            Node node = (Node) event.getSource();
-//            Stage stage = (Stage) node.getScene().getWindow();
-//            stage.setX(event.getScreenX() - xOffset);
-//            stage.setY(event.getScreenY() - yOffset);
-//        });
-//        if (imgView != null){
-//            imgView.setImage(new Image("file:src/main/resources/proggroup/advprogmt/loginBG.jpg",false));
-//            Rectangle clip = new Rectangle();
-//            clip.setWidth(1280.0);
-//            clip.setHeight(720);
-//            clip.setArcHeight(40);
-//            clip.setArcWidth(40);
-//            clip.setStroke(Color.BLACK);
-//            imgView.setClip(clip);
-//            SnapshotParameters parameters = new SnapshotParameters();
-//            parameters.setFill(Color.TRANSPARENT);
-//            WritableImage image = imgView.snapshot(parameters, null);
-//            imgView.setClip(null);
-//            imgView.setImage(image);
-//        }
+        anchorPane.setOnMousePressed(event -> {
+            xOffset = event.getSceneX();
+            yOffset = event.getSceneY();
+        });
+        hbox.setOnMouseDragged(event -> {
+            Node node = (Node) event.getSource();
+            Stage stage = (Stage) node.getScene().getWindow();
+            stage.setX(event.getScreenX() - xOffset);
+            stage.setY(event.getScreenY() - yOffset);
+        });
+        if (imgView != null){
+            imgView.setImage(new Image("file:src/main/resources/org/example/loginBG.jpg",false));
+            Rectangle clip = new Rectangle();
+            clip.setWidth(1280.0);
+            clip.setHeight(720);
+            clip.setArcHeight(40);
+            clip.setArcWidth(40);
+            clip.setStroke(Color.BLACK);
+            imgView.setClip(clip);
+            SnapshotParameters parameters = new SnapshotParameters();
+            parameters.setFill(Color.TRANSPARENT);
+            WritableImage image = imgView.snapshot(parameters, null);
+            imgView.setClip(null);
+            imgView.setImage(image);
+        }
     }
 }

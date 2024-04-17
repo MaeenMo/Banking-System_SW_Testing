@@ -1,4 +1,7 @@
 package org.example;
+import java.time.Year;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 public class Bank {
@@ -32,6 +35,7 @@ class Account {
     private String accountOwner;
     private double balance;
     private String password;
+    protected ArrayList<Loan> takenLoans = new ArrayList<>();
 
     public Account(String accountId, String accountOwner, double initialBalance,String password) {
         this.accountId = accountId;
@@ -53,6 +57,31 @@ class Account {
             balance -= amount;
         } else {
             System.out.println("Insufficient balance.");
+        }
+    }
+
+    public void takeLoan(String loanId, double loanAmount, double intR, int p) {
+        Loan l = new Loan(loanId, loanAmount, this, intR, p);
+        takenLoans.add(l);
+        l.disburseLoan();
+    }
+
+    public boolean payLoan(String loanId) {
+        int found = -1;
+        for (Loan i:takenLoans){
+            if (i.getLoanId().equals(loanId)){
+                found = takenLoans.indexOf(i);
+                break;
+            }
+        }
+        if (found == -1)
+            return false;
+        else{
+            if (takenLoans.get(found).makePayment()){
+                takenLoans.remove(found);
+                return true;
+            } else
+                return false;
         }
     }
 
@@ -135,27 +164,54 @@ class Loan {
     private String loanId;
     private double loanAmount;
     private Account loanAccount;
+    private int period;
+    private int startYear;
+    private double interestRate;
 
-    public Loan(String loanId, double loanAmount, Account loanAccount) {
+    public Loan(String loanId, double loanAmount, Account loanAccount, double intR, int p) {
         this.loanId = loanId;
+        this.interestRate = intR;
+        this.period = p;
         this.loanAmount = loanAmount;
         this.loanAccount = loanAccount;
     }
 
+    public String getLoanId() {
+        return loanId;
+    }
+
+    public double getInterestRate() {
+        return interestRate;
+    }
+
     public void disburseLoan() {
         loanAccount.deposit(loanAmount);
+        startYear = Year.now().getValue();
         System.out.println("Loan disbursed: " + loanAmount + " to account: " + loanAccount.getAccountId());
     }
 
-    public void makePayment(double amount) {
-        if(amount>loanAmount)
-            System.out.println("you are paying more than the loan amount.");
-        else{
-        loanAccount.withdraw(amount);
-        loanAmount-=amount;
-        System.out.println("Loan repayment: " + amount + " from account: " + loanAccount.getAccountId());
+    public boolean makePayment() {
+        if (Year.now().getValue() - startYear > period) {
+            System.out.println("you exceeded loan payment date");
+            return false;
         }
+        loanAccount.withdraw(loanAmount + (loanAmount*(interestRate/100)));
+        System.out.println("Loan repayment: " + loanAmount + " from account: " + loanAccount.getAccountId());
+        return true;
     }
+
+    public void setStartYear(int startYear) {
+        this.startYear = startYear;
+    }
+
+    public int getStartYear() {
+        return startYear;
+    }
+
+    public int getPeriod() {
+        return period;
+    }
+
     public double getLoanAmount(){
         return loanAmount;
     }
