@@ -25,6 +25,8 @@ import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
+import javafx.scene.text.Text;
+
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -35,6 +37,7 @@ public class HomeController {
     Button tempBtnIgnoreRemove = new Button();
     String tempStrIgnore;
     String tempStrIgnore1;
+    public static Account CurrentUser;
     @FXML
     AnchorPane anchorPane;
     @FXML
@@ -49,14 +52,22 @@ public class HomeController {
     Label accNoDisplay;
     @FXML
     Pane homePane;
-    @FXML
-    Pane mainPane;
+//    @FXML
+//    Pane mainPane;
 //    @FXML
 //    Pane settingsPane;
 //    @FXML
 //    GridPane gridPane;
+//    @FXML
+//    HBox settingsBtns;
     @FXML
-    HBox settingsBtns;
+    Pane transactionsPane;
+    @FXML
+    Pane loanPane;
+    @FXML
+    VBox transactionMenu;
+    @FXML
+    VBox loanMenu;
     @FXML
     Pane depositPane;
     @FXML
@@ -64,25 +75,16 @@ public class HomeController {
     @FXML
     Pane transferPane;
     @FXML
-    JFXButton withdrawBtn;
+    Pane disburseLoanPane;
     @FXML
-    JFXButton depositBtn;
+    Pane viewLoansPane;
+
     @FXML
-    TextField transferBtn;
+    Text accBalance1;
     @FXML
-    JFXButton searchBtn;
+    Text accBalance2;
     @FXML
-    ImageView usersIco;
-//    Search search = new Search();
-    @FXML
-    ListView<HBoxCell> bookListview;
-    @FXML
-    ListView<HBoxCell> userListview;
-//    User user = new User();
-    @FXML
-    JFXButton settingsBtn;
-    @FXML
-    ImageView settingsIco;
+    JFXComboBox<String> takenLoan;
     @FXML
     JFXButton addUserBtn;
     @FXML
@@ -148,8 +150,8 @@ public class HomeController {
     Button backBtn;
     @FXML
     Label userEdited;
-    @FXML
-    ListView<HBoxCell> olListview;
+//    @FXML
+//    ListView<HBoxCell> olListview;
     @FXML
     Line line1;
     @FXML
@@ -166,37 +168,18 @@ public class HomeController {
     }
     private double xOffset = 0;
     private double yOffset = 0;
-    public void enter(KeyEvent e){
-        if (e.getCode().equals(KeyCode.ENTER))
-            searchBtn.fire();
-    }
-    public void checkType(){
-//        settingsBtn.setVisible(!User.getType().equals("Reader"));
-//        settingsIco.setVisible(!User.getType().equals("Reader"));
-//        line1.setVisible(!User.getType().equals("Reader"));
-//        usersBtn.setVisible(!User.getType().equals("Reader"));
-//        usersIco.setVisible(!User.getType().equals("Reader"));
-    }
-    public void displayBooks(){
+//    public void enter(KeyEvent e){
+//        if (e.getCode().equals(KeyCode.ENTER));
+//
+//    }
 
-    }
-    public void displayUsers(){
-
-    }
     public void back(){
-//        settingsPane.setVisible(false);
-        setvisible("none");
-        displayUsers();
-    }
-
-    public void settings(){
-        setvisible("settings");
-        settingsBtn.getStyleClass().add("selected");
+        setvisible("back");
     }
     public void newUser(){
         clearFields();
         setvisible("settings");
-        settingsBtn.getStyleClass().add("selected");
+
         addUserBtn.getStyleClass().add("selected");
         addBookBtn.getStyleClass().remove("selected");
         bookOLBtn.getStyleClass().remove("selected");
@@ -240,38 +223,6 @@ public class HomeController {
 //            }
 //        }
     }
-    public void newBook(){
-        clearFields();
-        setvisible("settings");
-//        addbookPane.setVisible(true);
-        settingsBtn.getStyleClass().add("selected");
-        addUserBtn.getStyleClass().remove("selected");
-        addBookBtn.getStyleClass().add("selected");
-        bookOLBtn.getStyleClass().remove("selected");
-    }
-    public void saveBook(){
-//        bookAdded.setText("");
-//        if (!User.checkEmpty(booktitleField,bookfieldErr)){
-//            search.viewallBooks();
-//            for (String i : Search.booksArr) {
-//                if (booktitleField.getText().equals(i)) {
-//                    bookExist = true;
-//                    break;
-//                } else bookExist = false;
-//            }if(bookExist){
-//                bookAdded.setText("Book already exists");
-//                bookAdded.setStyle("-fx-text-fill:red");
-//            }else {
-//                try {
-//                    book.addBook(new Book(booktitleField.getText()).getTitle());
-//                    clearFields();
-//                    bookAdded.setText("Book Added");
-//                    bookAdded.setStyle("-fx-text-fill:limegreen");
-//                } catch (NullPointerException e) {
-//                }
-//            }
-//        }
-    }
     private void clearFields() {
 //        searchField.clear();
         userNameField.clear();
@@ -309,68 +260,68 @@ public class HomeController {
     private void defaultStyle(TextField field){
         field.setStyle("-fx-background-radius:20;-fx-border-radius:20;-fx-focus-color:transparent;-fx-faint-focus-color:transparent;");
     }
-    public void hboxCell(ListView<HBoxCell> listView, String btnlbl){
-        for(Node entity: listView.getItems()){
-            for(Node nested: ((HBoxCell)entity).getChildren()){
-                if(nested.getClass() == tempLabelIgnore.getClass()){
-                    tempStrIgnore = ((Label) nested).getText();
-                }
-                else if(nested.getClass() == tempBtnIgnore.getClass()){
-                    if(((Button) nested).getText().equals(btnlbl)){
-                        tempBtnIgnoreRent = ((Button) nested);
-                        setEvent(tempStrIgnore, "",tempBtnIgnoreRent, tempBtnIgnoreRemove);
-                    }
-                }
-            }
-        }
-        for(Node entity: listView.getItems() ){
-            for(Node nested: ((HBoxCell)entity).getChildren()){
-                if(nested.getClass() == tempLabelIgnore.getClass()){
-                    tempStrIgnore = ((Label) nested).getText();
-                } else if(nested.getClass() == tempBtnIgnore.getClass()) {
-                    if (((Button) nested).getText().equals("Remove")) {
-                        tempBtnIgnoreRemove = ((Button) nested);
-                        setEvent(tempStrIgnore, "",tempBtnIgnoreRent, tempBtnIgnoreRemove);
-                    }
-                }
-            }
-        }
-    }
-    public void hboxCell(ListView<HBoxCell> listView){
-        int i=0;
-        for(Node entity: listView.getItems() ){
-            for(Node nested: ((HBoxCell)entity).getChildren()){
-                if(nested.getClass() == tempLabelIgnore.getClass()){
-                    if (i % 2 == 0){
-                        tempStrIgnore1 = ((Label) nested).getText();
-                    }else tempStrIgnore = ((Label) nested).getText();
-                } else if(nested.getClass() == tempBtnIgnore.getClass()) {
-                    if (((Button) nested).getText().equals("✔")) {
-                        tempBtnIgnoreRent = ((Button) nested);
-                        setEvent(tempStrIgnore,tempStrIgnore1,tempBtnIgnoreRent, tempBtnIgnoreRemove);
-                    }
-                }
-                i++;
-            }
-        }
-        i=0;
-        for(Node entity: listView.getItems() ){
-            for(Node nested: ((HBoxCell)entity).getChildren()){
-                if(nested.getClass() == tempLabelIgnore.getClass()){
-                    if (i % 2 == 0){
-                        tempStrIgnore1 = ((Label) nested).getText();
-                    }else tempStrIgnore = ((Label) nested).getText();
-                } else if(nested.getClass() == tempBtnIgnore.getClass()) {
-                    if (((Button) nested).getText().equals("X")) {
-                        tempBtnIgnoreRemove = ((Button) nested);
-                        setEvent(tempStrIgnore, tempStrIgnore1,tempBtnIgnoreRent, tempBtnIgnoreRemove);
-                    }
-                }
-                i++;
-            }
-        }
-    }
-    public void setEvent(String lbl,String lbl1, Button btn1, Button btn2){
+//    public void hboxCell(ListView<HBoxCell> listView, String btnlbl){
+//        for(Node entity: listView.getItems()){
+//            for(Node nested: ((HBoxCell)entity).getChildren()){
+//                if(nested.getClass() == tempLabelIgnore.getClass()){
+//                    tempStrIgnore = ((Label) nested).getText();
+//                }
+//                else if(nested.getClass() == tempBtnIgnore.getClass()){
+//                    if(((Button) nested).getText().equals(btnlbl)){
+//                        tempBtnIgnoreRent = ((Button) nested);
+//                        setEvent(tempStrIgnore, "",tempBtnIgnoreRent, tempBtnIgnoreRemove);
+//                    }
+//                }
+//            }
+//        }
+//        for(Node entity: listView.getItems() ){
+//            for(Node nested: ((HBoxCell)entity).getChildren()){
+//                if(nested.getClass() == tempLabelIgnore.getClass()){
+//                    tempStrIgnore = ((Label) nested).getText();
+//                } else if(nested.getClass() == tempBtnIgnore.getClass()) {
+//                    if (((Button) nested).getText().equals("Remove")) {
+//                        tempBtnIgnoreRemove = ((Button) nested);
+//                        setEvent(tempStrIgnore, "",tempBtnIgnoreRent, tempBtnIgnoreRemove);
+//                    }
+//                }
+//            }
+//        }
+//    }
+//    public void hboxCell(ListView<HBoxCell> listView){
+//        int i=0;
+//        for(Node entity: listView.getItems() ){
+//            for(Node nested: ((HBoxCell)entity).getChildren()){
+//                if(nested.getClass() == tempLabelIgnore.getClass()){
+//                    if (i % 2 == 0){
+//                        tempStrIgnore1 = ((Label) nested).getText();
+//                    }else tempStrIgnore = ((Label) nested).getText();
+//                } else if(nested.getClass() == tempBtnIgnore.getClass()) {
+//                    if (((Button) nested).getText().equals("✔")) {
+//                        tempBtnIgnoreRent = ((Button) nested);
+//                        setEvent(tempStrIgnore,tempStrIgnore1,tempBtnIgnoreRent, tempBtnIgnoreRemove);
+//                    }
+//                }
+//                i++;
+//            }
+//        }
+//        i=0;
+//        for(Node entity: listView.getItems() ){
+//            for(Node nested: ((HBoxCell)entity).getChildren()){
+//                if(nested.getClass() == tempLabelIgnore.getClass()){
+//                    if (i % 2 == 0){
+//                        tempStrIgnore1 = ((Label) nested).getText();
+//                    }else tempStrIgnore = ((Label) nested).getText();
+//                } else if(nested.getClass() == tempBtnIgnore.getClass()) {
+//                    if (((Button) nested).getText().equals("X")) {
+//                        tempBtnIgnoreRemove = ((Button) nested);
+//                        setEvent(tempStrIgnore, tempStrIgnore1,tempBtnIgnoreRent, tempBtnIgnoreRemove);
+//                    }
+//                }
+//                i++;
+//            }
+//        }
+//    }
+//    public void setEvent(String lbl,String lbl1, Button btn1, Button btn2){
 //        if (btn1.getText().equals("Edit")){
 //            btn1.setOnAction(e -> {
 //                setvisible("none");
@@ -492,27 +443,30 @@ public class HomeController {
 //                orderList();
 //            });
 //        }
-    }
+//    }
 
     public void displayTransactionsMenu(ActionEvent actionEvent) {
+        setvisible("transaction");
     }
 
     public void displayLoanMenu(ActionEvent actionEvent) {
+        setvisible("loan");
     }
 
     public void depositView(ActionEvent actionEvent) {
+        setvisible("deposit");
     }
 
     public void withdrawView(ActionEvent actionEvent) {
+        setvisible("withdraw");
     }
 
     public void transferView(ActionEvent actionEvent) {
+        setvisible("transfer");
     }
 
     public void deposit(ActionEvent actionEvent) {
-    }
 
-    public void disburseLoan(ActionEvent actionEvent) {
     }
 
     public void withdraw(ActionEvent actionEvent) {
@@ -521,90 +475,95 @@ public class HomeController {
     public void transfer(ActionEvent actionEvent) {
     }
 
-    public void viewLoansView(ActionEvent actionEvent) {
-    }
-
     public void disburseloanView(ActionEvent actionEvent) {
+        setvisible("disburse");
     }
 
-    public static class HBoxCell extends HBox {
-        Label text = new Label();
-        Label text1 = new Label();
-        Button btn1 = new Button();
-        Button btn2 = new Button();
-        HBoxCell(String labelText, String buttonText1, String color1, String buttonText2, String color2, String type) {
-            super();
-            text.setStyle("-fx-font-size:21;-fx-font-weight:bold;");
-            text.setText(labelText);
-            text.setMaxWidth(Double.MAX_VALUE);
-            HBox.setHgrow(text, Priority.ALWAYS);
-            getStylesheets().add(getClass().getResource("styling.css").toExternalForm());
-            this.getChildren().add(text);
-            if (type.equals("Librarian")){
-                btn2 = new Button();
-                btnColor(btn2,color2);
-                btn2.setText(buttonText2);
-                btn2.setPadding(new Insets(4, 46, 4, 46));
-                this.getChildren().add(btn2);
-                HBox.setMargin(btn2, new Insets(0, 10, 0, 0));
-                btnColor(btn1,color1);
-                this.getChildren().add(btn1);
-                btn1.setText(buttonText1);
-                btn1.setPadding(new Insets(4, 30, 4, 30));
-            }else {
-                this.getChildren().add(btn1);
-                btnColor(btn1,color1);
-                btn1.setText(buttonText1);
-                btn1.setPadding(new Insets(4,46,4,46));
-            }
-        }
-        HBoxCell(String users, String books){
-            super();
-            Button confirm = new Button("✔");
-            Button reject = new Button("X");
-            btnColor(confirm,"99ff33");
-            btnColor(reject,"ff4c33");
-            confirm.setPadding(new Insets(5,10,5,10));
-            reject.setPadding(new Insets(5,12,4,12));
-            HBox.setMargin(confirm, new Insets(0, 10, 0, 0));
-            text.setText(users);
-            text1.setText(books);
-            text.setStyle("-fx-font-size:20;");
-            text1.setStyle("-fx-font-size:20");
-            text.setMaxWidth(Double.MAX_VALUE);
-            text1.setMaxWidth(Double.MAX_VALUE);
-            HBox.setHgrow(text, Priority.ALWAYS);
-            HBox.setHgrow(text1, Priority.ALWAYS);
-            this.getChildren().addAll(text,text1,confirm,reject);
-        }
-        public void btnColor(Button btn,String color){
-            switch (color) {
-                case "crimson" -> btn.getStyleClass().add("ButtonR");
-                case "limegreen" -> btn.getStyleClass().add("ButtonG");
-                case "#FFC107" -> btn.getStyleClass().add("ButtonY");
-                case "99ff33" -> btn.getStyleClass().add("orderBtn1");
-                case "ff4c33" -> btn.getStyleClass().add("orderBtn2");
-            }
-        }
-        HBoxCell(String labelText){
-            super();
-            text.setText(labelText);
-            text.setStyle("-fx-font-size:21;-fx-font-weight:bold;-fx-alignment:center");
-            text.setMaxWidth(Double.MAX_VALUE);
-            HBox.setHgrow(text, Priority.ALWAYS);
-            this.getChildren().add(text);
-        }
-        HBoxCell(String col1, String col2, int width){
-            super();
-            text.setText(col1);
-            text1.setText(col2);
-            text.setStyle("-fx-font-size:24;-fx-font-weight:bold;");
-            text1.setStyle("-fx-font-size:24;-fx-font-weight:bold;");
-            text.setMaxWidth((double) width/2);
-            HBox.setHgrow(text, Priority.ALWAYS);
-            this.getChildren().addAll(text,text1);
-        }
+    public void disburseLoan(ActionEvent actionEvent) {
     }
+
+    public void viewLoansView(ActionEvent actionEvent) {
+        setvisible("viewloans");
+    }
+
+//    public static class HBoxCell extends HBox {
+//        Label text = new Label();
+//        Label text1 = new Label();
+//        Button btn1 = new Button();
+//        Button btn2 = new Button();
+//        HBoxCell(String labelText, String buttonText1, String color1, String buttonText2, String color2, String type) {
+//            super();
+//            text.setStyle("-fx-font-size:21;-fx-font-weight:bold;");
+//            text.setText(labelText);
+//            text.setMaxWidth(Double.MAX_VALUE);
+//            HBox.setHgrow(text, Priority.ALWAYS);
+//            getStylesheets().add(getClass().getResource("styling.css").toExternalForm());
+//            this.getChildren().add(text);
+//            if (type.equals("Librarian")){
+//                btn2 = new Button();
+//                btnColor(btn2,color2);
+//                btn2.setText(buttonText2);
+//                btn2.setPadding(new Insets(4, 46, 4, 46));
+//                this.getChildren().add(btn2);
+//                HBox.setMargin(btn2, new Insets(0, 10, 0, 0));
+//                btnColor(btn1,color1);
+//                this.getChildren().add(btn1);
+//                btn1.setText(buttonText1);
+//                btn1.setPadding(new Insets(4, 30, 4, 30));
+//            }else {
+//                this.getChildren().add(btn1);
+//                btnColor(btn1,color1);
+//                btn1.setText(buttonText1);
+//                btn1.setPadding(new Insets(4,46,4,46));
+//            }
+//        }
+//        HBoxCell(String users, String books){
+//            super();
+//            Button confirm = new Button("✔");
+//            Button reject = new Button("X");
+//            btnColor(confirm,"99ff33");
+//            btnColor(reject,"ff4c33");
+//            confirm.setPadding(new Insets(5,10,5,10));
+//            reject.setPadding(new Insets(5,12,4,12));
+//            HBox.setMargin(confirm, new Insets(0, 10, 0, 0));
+//            text.setText(users);
+//            text1.setText(books);
+//            text.setStyle("-fx-font-size:20;");
+//            text1.setStyle("-fx-font-size:20");
+//            text.setMaxWidth(Double.MAX_VALUE);
+//            text1.setMaxWidth(Double.MAX_VALUE);
+//            HBox.setHgrow(text, Priority.ALWAYS);
+//            HBox.setHgrow(text1, Priority.ALWAYS);
+//            this.getChildren().addAll(text,text1,confirm,reject);
+//        }
+//        public void btnColor(Button btn,String color){
+//            switch (color) {
+//                case "crimson" -> btn.getStyleClass().add("ButtonR");
+//                case "limegreen" -> btn.getStyleClass().add("ButtonG");
+//                case "#FFC107" -> btn.getStyleClass().add("ButtonY");
+//                case "99ff33" -> btn.getStyleClass().add("orderBtn1");
+//                case "ff4c33" -> btn.getStyleClass().add("orderBtn2");
+//            }
+//        }
+//        HBoxCell(String labelText){
+//            super();
+//            text.setText(labelText);
+//            text.setStyle("-fx-font-size:21;-fx-font-weight:bold;-fx-alignment:center");
+//            text.setMaxWidth(Double.MAX_VALUE);
+//            HBox.setHgrow(text, Priority.ALWAYS);
+//            this.getChildren().add(text);
+//        }
+//        HBoxCell(String col1, String col2, int width){
+//            super();
+//            text.setText(col1);
+//            text1.setText(col2);
+//            text.setStyle("-fx-font-size:24;-fx-font-weight:bold;");
+//            text1.setStyle("-fx-font-size:24;-fx-font-weight:bold;");
+//            text.setMaxWidth((double) width/2);
+//            HBox.setHgrow(text, Priority.ALWAYS);
+//            this.getChildren().addAll(text,text1);
+//        }
+//    }
     public Rectangle roundedListview(int width, int height){
         Rectangle clip = new Rectangle();
         clip.setWidth(width);
@@ -615,10 +574,11 @@ public class HomeController {
     }
     public void logout(){
         try {
+            CurrentUser = null;
             Parent root = FXMLLoader.load(getClass().getResource("Login.fxml"));
             loginScene = new Scene(root, 1280, 720, Color.TRANSPARENT);
             Stage window = (Stage)(logoutBtn.getScene().getWindow());
-            window.setTitle("Library System - Login");
+            window.setTitle("Bank System - Login");
             window.setScene(loginScene);
             window.show();
         } catch (IOException e) {
@@ -627,104 +587,57 @@ public class HomeController {
     }
     private void setvisible(String window){
         switch (window) {
-            case "settings" -> {
-//                settingsPane.setVisible(true);
-                settingsBtns.setVisible(true);
-//                adduserPane.setVisible(false);
-//                gridPane.setVisible(false);
-//                addbookPane.setVisible(false);
-                userAdded.setVisible(false);
-                addBtn1.setVisible(false);
-                saveBtn.setVisible(false);
-                blockedCB.setVisible(false);
-                backBtn.setVisible(false);
-                userEdited.setVisible(false);
-//                bookOL.setVisible(false);
-                mainPane.setVisible(false);
-                showPassBtn.setVisible(false);
-                showIco.setVisible(false);
-                hideIco.setVisible(false);
-                showPassBtn.setVisible(false);
-                passFieldShown.setVisible(false);
-//                booksBtn.getStyleClass().remove("selected");
-//                usersBtn.getStyleClass().remove("selected");
-                settingsBtn.getStyleClass().remove("selected");
-                addUserBtn.getStyleClass().remove("selected");
-                addBookBtn.getStyleClass().remove("selected");
-                bookOLBtn.getStyleClass().remove("selected");
+            case "transaction" -> {
+                setvisible("back");
+                transactionsPane.setVisible(true);
+                loanPane.setVisible(false);
             }
-            case "main" -> {
-                mainPane.setVisible(true);
-//                searchField.setVisible(true);
-                searchBtn.setVisible(true);
-                bookListview.setVisible(false);
-                userListview.setVisible(false);
-//                settingsPane.setVisible(false);
-                showPassBtn.setVisible(false);
-                showIco.setVisible(false);
-                hideIco.setVisible(false);
-                showPassBtn.setVisible(false);
-//                booksBtn.getStyleClass().remove("selected");
-//                usersBtn.getStyleClass().remove("selected");
-                settingsBtn.getStyleClass().remove("selected");
-                addUserBtn.getStyleClass().remove("selected");
-                addBookBtn.getStyleClass().remove("selected");
-                bookOLBtn.getStyleClass().remove("selected");
+            case "loan" -> {
+                setvisible("back");
+                loanPane.setVisible(true);
+                transactionsPane.setVisible(false);
             }
-            case "edit" -> {
-                mainPane.setVisible(false);
-//                settingsPane.setVisible(true);
-                settingsBtns.setVisible(false);
-//                adduserPane.setVisible(true);
-//                addbookPane.setVisible(false);
-//                gridPane.setVisible(true);
-                userAdded.setVisible(false);
-                addBtn1.setVisible(false);
-                saveBtn.setVisible(true);
-                blockedCB.setVisible(true);
-                backBtn.setVisible(true);
-                userEdited.setVisible(true);
-//                bookOL.setVisible(false);
-                showPassBtn.setVisible(false);
-                showIco.setVisible(false);
-                hideIco.setVisible(false);
-                showPassBtn.setVisible(false);
+            case "deposit" -> {
+                depositPane.setVisible(true);
+            }
+            case "withdraw" -> {
+                withdrawPane.setVisible(true);
+            }
+            case "transfer" -> {
+                transferPane.setVisible(true);
+            }
+            case "disburse" -> {
+                disburseLoanPane.setVisible(true);
+            }
+            case "viewloans" -> {
+                viewLoansPane.setVisible(true);
+            }
+            case "back" ->{
+                depositPane.setVisible(false);
+                withdrawPane.setVisible(false);
+                transferPane.setVisible(false);
+                disburseLoanPane.setVisible(false);
+                viewLoansPane.setVisible(false);
             }
             case "none" -> {
-                mainPane.setVisible(false);
-//                settingsPane.setVisible(false);
-//                booksBtn.getStyleClass().remove("selected");
-//                usersBtn.getStyleClass().remove("selected");
-                settingsBtn.getStyleClass().remove("selected");
-                addUserBtn.getStyleClass().remove("selected");
-                addBookBtn.getStyleClass().remove("selected");
-                bookOLBtn.getStyleClass().remove("selected");
+                transactionsPane.setVisible(false);
+                loanPane.setVisible(false);
+                depositPane.setVisible(false);
+                withdrawPane.setVisible(false);
+                transferPane.setVisible(false);
+                disburseLoanPane.setVisible(false);
+                viewLoansPane.setVisible(false);
             }
-        }
-    }
-    public void showPass(){
-        if(!visible){
-            hideIco.setVisible(false);
-            showIco.setVisible(true);
-            passFieldShown.setText(passField.getText());
-            passFieldShown.setVisible(true);
-            passField.setVisible(false);
-            visible=true;
-        }else {
-            hideIco.setVisible(true);
-            showIco.setVisible(false);
-            passField.setText(passFieldShown.getText());
-            passField.setVisible(true);
-            passFieldShown.setVisible(false);
-            visible=false;
         }
     }
     public void initialize(){
-//        if (usernameDisplay != null) {
-//            usernameDisplay.setText(User.getUserName());
-//            typeDisplay.setText(User.getType());
-//            checkType();
-//        }
+        if (CurrentUser != null) {
+            usernameDisplay.setText(CurrentUser.getAccountOwner());
+            accNoDisplay.setText(CurrentUser.getAccountId());
+            accBalance1.setText("$"+CurrentUser.getBalance()); //account balance here <--
+            accBalance2.setText("$"+CurrentUser.getBalance()); //account balance here <--
+        }
+        takenLoan.getItems().addAll("1 Year with 10% interest","3 Years With 15% interest","5 Years with 20% interest","10 Years with 30% interest");
 //        mainPane.setVisible(false);
 //        settingsPane.setVisible(false);
 //        settingsBtns.setVisible(false);
@@ -733,6 +646,7 @@ public class HomeController {
 //        userListview.setVisible(false);
 //        bookOL.setVisible(false);
 //        type.getItems().addAll("Librarian","Reader");
+        setvisible("none");
         anchorPane.setOnMousePressed(event -> {
             xOffset = event.getSceneX();
             yOffset = event.getSceneY();
@@ -747,7 +661,7 @@ public class HomeController {
             imgView.setImage(new Image("file:src/main/resources/org/example/loginBG.jpg",false));
             Rectangle clip = new Rectangle();
             clip.setWidth(1280.0);
-            clip.setHeight(720);
+            clip.setHeight(750);
             clip.setArcHeight(40);
             clip.setArcWidth(40);
             clip.setStroke(Color.BLACK);

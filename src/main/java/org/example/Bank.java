@@ -1,33 +1,31 @@
 package org.example;
 import java.time.Year;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-public class Bank {
-    public Map<String, Account> accounts;
-    public Map<String, Transaction> transactions;
+import java.util.*;
 
-    public Bank() {
-        accounts = new HashMap<>();
-        transactions = new HashMap<>();
-    }
+public class Bank {
+    public static ArrayList<Account> accounts = new ArrayList<>();
+    public static ArrayList<Transaction> transactions = new ArrayList<>();
 
     public void addAccount(Account account) {
-        accounts.put(account.getAccountId(), account);
+        accounts.add(account);
     }
 
     public Account getAccount(String accountId) {
-        return accounts.get(accountId);
-    }
-
-    public void addTransaction(Transaction transaction, Account fromAccount, Account toAccount) {
-        transaction.processTransfer();
-        transactions.put(transaction.getTransactionId(), transaction);
+        for (Account a:accounts){
+            if (a.getAccountId().equals(accountId)){
+                return a;
+            }
+        }
+        return null;
     }
 
     public Transaction getTransaction(String transactionID) {
-        return transactions.get(transactionID);
+        for (Transaction t:transactions){
+            if (t.getTransactionId().equals(transactionID)){
+                return t;
+            }
+        }
+        return null;
     }
 }
 class Account {
@@ -44,19 +42,36 @@ class Account {
         this.password=password;
     }
 
-    public void deposit(double amount) {
-        if (amount > 0) {
-            balance += amount;
+    public void processTransaction(Account toAccount,double amount, String transactionDate, String TransactionType) {
+        if (this.getBalance() >= amount) {
+            if (amount > 0) {
+                Transaction t = new Transaction(this, toAccount, amount, transactionDate, TransactionType);
+                balance -= amount;
+                toAccount.balance += amount;
+                Bank.transactions.add(t);
+            } else {
+                System.out.println("Amount must be positive.");
+            }
         } else {
-            System.out.println("Amount must be positive.");
+            System.out.println("Transfer failed: Insufficient funds.");
         }
     }
 
-    public void withdraw(double amount) {
-        if (amount <= balance) {
-            balance -= amount;
-        } else {
-            System.out.println("Insufficient balance.");
+    public void processTransaction(double amount, String transactionDate, String TransactionType) {
+        if (TransactionType.equals("D")){
+            if (amount > 0) {
+                balance += amount;
+                Bank.transactions.add(new Transaction(this, amount, transactionDate, TransactionType));
+            } else {
+                System.out.println("Amount must be positive.");
+            }
+        }else{
+            if (amount <= balance) {
+                balance -= amount;
+                Bank.transactions.add(new Transaction(this, amount, transactionDate, TransactionType));
+            } else {
+                System.out.println("Insufficient balance.");
+            }
         }
     }
 
@@ -108,36 +123,49 @@ class Account {
     public void setAccountOwner(String accountOwner) {
         this.accountOwner=accountOwner;
     }
-
     public void setPassword(String password){
         this.password=password;
+    }
+    public String getPassword(){
+        return password;
     }
 }
 class Transaction {
     private String transactionId;
+    private String TransactionType;
     private Account fromAccount;
     private Account toAccount;
     private double amount;
     private String transactionDate;
 
-    public Transaction(String transactionId, Account fromAccount, Account toAccount, double amount, String transactionDate) {
-        this.transactionId = transactionId;
+    public Transaction(Account fromAccount, Account toAccount, double amount, String transactionDate, String TransactionType) {
+        this.transactionId = TransactionType + new Random().ints(10);
         this.fromAccount = fromAccount;
         this.toAccount = toAccount;
         this.amount = amount;
         this.transactionDate = transactionDate;
+        this.TransactionType = TransactionType;
     }
 
-    public void processTransfer() {
-        if (fromAccount.getBalance() >= amount) {
-            fromAccount.withdraw(amount);
-            toAccount.deposit(amount);
-            System.out.println("Transaction successful: " + amount + " transferred from " + fromAccount.getAccountId() + " to " + toAccount.getAccountId());
-        } else {
-            System.out.println("Transaction failed: Insufficient funds.");
-        }
+    public Transaction(Account fromAccount, double amount, String transactionDate, String TransactionType) {
+        this.transactionId = TransactionType + new Random().ints(10);
+        this.fromAccount = fromAccount;
+        this.toAccount = null;
+        this.amount = amount;
+        this.transactionDate = transactionDate;
+        this.TransactionType = TransactionType;
     }
-
+//
+//    public void processTransfer() {
+//        if (fromAccount.getBalance() >= amount) {
+//            fromAccount.withdraw(amount);
+//            toAccount.deposit(amount);
+//            System.out.println("Transaction successful: " + amount + " transferred from " + fromAccount.getAccountId() + " to " + toAccount.getAccountId());
+//        } else {
+//            System.out.println("Transaction failed: Insufficient funds.");
+//        }
+//    }
+//
     public String getTransactionDetails() {
         return "Transaction ID: " + transactionId + ", Date: " + transactionDate +
                 ", From: " + fromAccount.getAccountId() + ", To: " + toAccount.getAccountId() + ", Amount: " + amount;
@@ -185,7 +213,7 @@ class Loan {
     }
 
     public void disburseLoan() {
-        loanAccount.deposit(loanAmount);
+        loanAccount.processTransaction(loanAmount, "17/04/2024", "D");
         startYear = Year.now().getValue();
         System.out.println("Loan disbursed: " + loanAmount + " to account: " + loanAccount.getAccountId());
     }
@@ -195,7 +223,8 @@ class Loan {
             System.out.println("you exceeded loan payment date");
             return false;
         }
-        loanAccount.withdraw(loanAmount + (loanAmount*(interestRate/100)));
+        loanAccount.processTransaction(loanAmount + (loanAmount*(interestRate/100)),
+                "17/04/2024", "W");
         System.out.println("Loan repayment: " + loanAmount + " from account: " + loanAccount.getAccountId());
         return true;
     }

@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class BankTest {
     public static Account a1, a2, a3, a4, a5;
     public static Bank bank;
-    public static Transaction t1, t2, t3;
+    public static Transaction t1, t2, t3, t4;
 
     @BeforeAll
     public static void setUp() {
@@ -17,19 +17,20 @@ public class BankTest {
         a3 = new Account("3", "Ben", 100, "13579");
         a4 = new Account("4", "Smith", 1000, "02468");
         a5 = new Account("5", "Tom", 10000, "87654");
-        t1 = new Transaction("x0987", a2, a1, 3000,"13/03/2023");
-        t2 = new Transaction("y6785", a4, a5, 1000,"14/04/2024");
-        t3 = new Transaction("z4563", a3, a1, 90,"12/02/2022");
-        System.out.println("\n---------------------------------");
+        t1 = new Transaction(a2, a1, 3000,"13/03/2023", "T");
+        t2 = new Transaction(a4, 1000,"14/04/2024","D");
+        t3 = new Transaction(a3, a1, 90,"12/02/2022","T");
+        t4 = new Transaction(a3, 7316,"18/05/2020","W");
+        System.out.println("\n-----------------------");
         System.out.println("Bank Class Test Started");
-        System.out.println("---------------------------------\n");
+        System.out.println("-----------------------\n");
     }
 
     @AfterAll
     static void tearDown() {
-        System.out.println("\n--------------------");
+        System.out.println("\n---------------------");
         System.out.println("Bank Class Test Ended");
-        System.out.println("-------------------------------------\n");
+        System.out.println("---------------------\n");
     }
 
 
@@ -52,7 +53,6 @@ public class BankTest {
     @Test
     @DisplayName("Check added Accounts")
     public void testAddedAccounts() {
-        setUp();
         bank.addAccount(a1);
         bank.addAccount(a2);
         bank.addAccount(a3);
@@ -75,19 +75,11 @@ public class BankTest {
     @Test
     @DisplayName("Check Transaction")
     public void testTransaction() {
-        setUp();
-        bank.addTransaction(t1, a2, a1);
-        bank.addTransaction(t2, a4, a5);
-        bank.addTransaction(t3, a3, a1);
-        assertEquals(bank.getTransaction("x0987").getTransactionAmount(), 3000);
-        assertEquals(bank.getTransaction("y6785").getTransactionDate(), "14/04/2024");
-        assertEquals(bank.getTransaction("z4563").getTransactionId(), "z4563");
-        assertEquals(a2.getBalance(), 10);
-        assertEquals(a1.getBalance(), 90);
-        assertEquals(a3.getBalance(), 10);
-        assertEquals(a4.getBalance(), 0);
-        assertEquals(a5.getBalance(), 11000);
-
+        bank.transactions.add(t1);bank.transactions.add(t2);bank.transactions.add(t3);
+        assertEquals(bank.getTransaction(t1.getTransactionId()), t1);
+        assertEquals(bank.getTransaction(t2.getTransactionId()), t2);
+        assertEquals(bank.getTransaction(t3.getTransactionId()), t3);
+        assertFalse(bank.getTransaction(t4.getTransactionId()) == t4);
     }
 }
 

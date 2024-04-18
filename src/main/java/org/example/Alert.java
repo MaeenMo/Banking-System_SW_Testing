@@ -22,7 +22,7 @@ public class Alert {
         alertStage.initModality(Modality.APPLICATION_MODAL);
 
         alertStage.setTitle(title);
-        alertStage.getIcons().add(new Image(Alert.class.getResourceAsStream("online-library.png")));
+        alertStage.getIcons().add(new Image(Alert.class.getResourceAsStream("BankIco.png")));
 
         Label msg = new Label();
         msg.setText(message);
@@ -33,10 +33,16 @@ public class Alert {
         msg.setStyle("-fx-font-weight:bold;-fx-text-fill:"+ color);
 
         JFXButton ok = new JFXButton("OK");
-        ok.setFocusTraversable(false);
+        ok.requestFocus();
         ok.setStyle("-fx-background-radius:7;-fx-focus-color:transparent;-fx-faint-focus-color:transparent;-fx-cursor:hand");
         ok.setPadding(new Insets(10,20,10,20));
         ok.setOnAction(e -> alertStage.close());
+
+        ok.setOnKeyPressed(e -> {
+            if(e.getCode().toString().equals("ENTER")){
+                alertStage.close();
+            }
+        });
 
         VBox vBox= new VBox();
         vBox.getChildren().addAll(msg,ok);

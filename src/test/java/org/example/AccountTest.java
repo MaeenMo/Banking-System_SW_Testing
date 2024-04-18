@@ -8,17 +8,18 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class AccountTest {
     public static Account a1 = new Account("1","Joe",2000,"12345");
+    public static Account a2 = new Account("2","Smith",5000,"12345");
     @BeforeAll
     public static void setUp() {
-        System.out.println("\n---------------------------------");
+        System.out.println("\n--------------------------");
         System.out.println("Account Class Test Started");
-        System.out.println("---------------------------------\n");
+        System.out.println("--------------------------\n");
     }
     @AfterAll
     public static void tearDown() {
-        System.out.println("\n---------------------------------");
+        System.out.println("\n------------------------");
         System.out.println("Account Class Test Ended");
-        System.out.println("---------------------------------\n");
+        System.out.println("------------------------\n");
     }
 
     @DisplayName("Test Deposit to User Account")
@@ -26,7 +27,7 @@ public class AccountTest {
     @ValueSource(doubles = {100, 200, 300})
     public void testDeposit(double a) {
         double oldBalance = a1.getBalance();
-        a1.deposit(a);
+        a1.processTransaction(a, "18/04/2024", "D");
         assertEquals(oldBalance + a, a1.getBalance());
     }
 
@@ -34,16 +35,41 @@ public class AccountTest {
     @DisplayName("Test Withdraw With Sufficient Amount from User Account")
     public void testWithdrawWithSufficientAmount() {
         double oldBalance = a1.getBalance();
-        a1.deposit(200);
-        a1.withdraw(100);
-        assertEquals(oldBalance+100, a1.getBalance());
+        a1.processTransaction(200, "18/04/2024", "W");
+        assertEquals(oldBalance - 200, a1.getBalance());
     }
+
 
     @Test
     @DisplayName("Test Withdraw Insufficient Amount from User Account")
     public void testWithdrawWithInSufficientAmount() {
-        a1.withdraw(1000);
-        assertFalse( a1.getBalance() == 0);
+        double oldBalance = a1.getBalance();
+        a1.processTransaction(30000, "18/04/2024", "W");
+        assertFalse(oldBalance - 30000 == a1.getBalance());
+    }
+
+
+    @Test
+    @DisplayName("Test Valid Transfer Money")
+    public void testProcessTransferValid(){
+        double oldBalanceA1 = a1.getBalance();
+        double oldBalanceA2 = a2.getBalance();
+        a1.processTransaction(a2, 1000, "18/04/2024", "T");
+        assertEquals(oldBalanceA1 - 1000,a1.getBalance());
+        assertEquals(oldBalanceA2 + 1000,a2.getBalance());
+
+    }
+
+
+    @Test
+    @DisplayName("Test Fail Transfer Money")
+    public void testProcessTransferFail(){
+        double oldBalanceA1 = a1.getBalance();
+        double oldBalanceA2 = a2.getBalance();
+        a1.processTransaction(a2, 2000, "18/04/2024", "T");
+        assertFalse(oldBalanceA1 - 1000 == a1.getBalance());
+        assertFalse(oldBalanceA2 + 1000 == a2.getBalance());
+
     }
 
     @Test

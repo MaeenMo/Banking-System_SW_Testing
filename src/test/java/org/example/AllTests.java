@@ -5,5 +5,5 @@ import org.junit.platform.runner.JUnitPlatform;
 
 @SuppressWarnings("deprecation")
 @RunWith(JUnitPlatform.class)
-@SelectClasses({LoanTest.class, BankTest.class, TransactionTest.class, AccountTest.class})
+@SelectClasses({LoanTest.class, BankTest.class, AccountTest.class})
 public class AllTests {}

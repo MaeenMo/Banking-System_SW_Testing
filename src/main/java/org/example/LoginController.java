@@ -11,6 +11,8 @@ import javafx.scene.SnapshotParameters;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import com.jfoenix.controls.JFXPasswordField;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
@@ -21,9 +23,13 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
+
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
 
 public class LoginController {
+    Bank bank = new Bank();
     @FXML
     Button focus;
     @FXML
@@ -60,42 +66,76 @@ public class LoginController {
     private double xOffset = 0;
     private double yOffset = 0;
 
-    @FXML
     public void enter1(KeyEvent e){
         if (e.getCode().equals(KeyCode.ENTER))
             passwordField.requestFocus();
     }
-    @FXML
     public void enter2(KeyEvent e){
         if (e.getCode().equals(KeyCode.ENTER)) {
             loginBtn.fire();
             loginBtn.requestFocus();
         }
     }
-
-    @FXML
-    protected void logIn(){
-//        if(User.validate(usernameField, passwordField, passwordShown, errmsgLable)) {
-//            if(User.getType().equals("Reader")){
-//                if (!Reader.validate(errmsgLable)){
-//                }else homeScreen();
-//            } else if (User.getType().equals("Librarian")) {
-//                homeScreen();
-//            }
-//        }
+    public void login(){
+        Account user = validate(usernameField, passwordField, passwordShown, errmsgLable);
+        if(user != null) {
+            homeScreen(user);
+        }
     }
-    public void homeScreen(){
-//        try {
-//            new Alert("Welcome "+ User.getUserName(),"Login Successful!","green");
-//            Parent root = FXMLLoader.load(getClass().getResource("Home.fxml"));
-//            Scene homeScene = new Scene(root, 1280, 720, Color.TRANSPARENT);
-//            Stage window = (Stage)(loginBtn.getScene().getWindow());
-//            window.setTitle("Library System - Home - " + User.getType() + ": " + User.getUserName());
-//            window.setScene(homeScene);
-//            window.show();
-//        } catch (IOException e) {
-//            throw new RuntimeException(e);
-//        }
+    public static Account validate(TextField username, PasswordField password, TextField passShown , Label msg){
+        if (!checkFields(username,password,passShown,msg)){
+            return null;
+        }
+        for (Account acc : Bank.accounts){
+            if (acc.getAccountId().equals(username.getText())){
+                if (password.getText().equals(acc.getPassword()) || passShown.getText().equals(acc.getPassword())) {
+                    return acc;
+                }else {
+                    msg.setText("Wrong Credentials");
+                    msg.setStyle("-fx-text-fill:red");
+                }
+                username.clear();
+                passShown.clear();
+                password.clear();
+            } else {
+                msg.setText("Wrong Credentials");
+                msg.setStyle("-fx-text-fill:red");
+            }
+        }
+        return null;
+    }
+    public static boolean checkFields(TextField username, PasswordField password,TextField passShown , Label msg) {
+        if (password.getText().isEmpty())
+            password.setText(passShown.getText());
+        if (username.getText().isEmpty() && password.getText().isEmpty()) {
+            msg.setText("Please enter your Username & Password");
+            msg.setStyle("-fx-text-fill:red");
+            return false;
+        } else if (username.getText().isEmpty()) {
+            msg.setText("Please enter your Username");
+            msg.setStyle("-fx-text-fill:red");
+            return false;
+        } else if (password.getText().isEmpty() && passShown.getText().isEmpty()) {
+            msg.setText("Please enter your Password");
+            msg.setStyle("-fx-text-fill:red");
+            return false;
+        }
+        return true;
+    }
+    public void homeScreen(Account User){
+        try {
+//            new Alert("Welcome "+ User.getAccountOwner(),"Login Successful!","green");
+            HomeController.CurrentUser = new Account(User.getAccountId(), User.getAccountOwner(),
+                    User.getBalance(), User.getPassword());
+            Parent root = FXMLLoader.load(getClass().getResource("Home.fxml"));
+            Scene homeScene = new Scene(root, 1280, 750, Color.TRANSPARENT);
+            Stage window = (Stage)(loginBtn.getScene().getWindow());
+            window.setTitle("Bank System - Home: " + User.getAccountOwner());
+            window.setScene(homeScene);
+            window.show();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
     public void showPass(){
         if(!visible){
@@ -114,7 +154,21 @@ public class LoginController {
             visible=false;
         }
     }
+    public void initiateAccounts(){
+        bank.addAccount(new Account("0", "John Doe", 10000.0, "0"));
+        bank.addAccount(new Account("12345678", "John Doe", 1000.0, "password1"));
+        bank.addAccount(new Account("23456789", "Jane Smith", 1500.0, "password2"));
+        bank.addAccount(new Account("34567890", "Alice Johnson", 2000.0, "password3"));
+        bank.addAccount(new Account("45678901", "Bob Brown", 1200.0, "password4"));
+        bank.addAccount(new Account("56789012", "Emma Lee", 1800.0, "password5"));
+        bank.addAccount(new Account("67890123", "Michael Wilson", 1700.0, "password6"));
+        bank.addAccount(new Account("78901234", "Sophia Garcia", 1600.0, "password7"));
+        bank.addAccount(new Account("89012345", "David Martinez", 1400.0, "password8"));
+        bank.addAccount(new Account("90123456", "Olivia Hernandez", 1300.0, "password9"));
+        bank.addAccount(new Account("01234567", "Ethan Taylor", 1100.0, "password10"));
+    }
     public void initialize(){
+        initiateAccounts();
         anchorPane.setOnMousePressed(event -> {
             xOffset = event.getSceneX();
             yOffset = event.getSceneY();
@@ -126,7 +180,7 @@ public class LoginController {
             stage.setY(event.getScreenY() - yOffset);
         });
         if (imgView != null){
-            imgView.setImage(new Image("file:loginBG.jpg",false));
+            imgView.setImage(new Image("file:src/main/resources/org/example/loginBG.jpg",false));
             Rectangle clip = new Rectangle();
             clip.setWidth(1280.0);
             clip.setHeight(720);
