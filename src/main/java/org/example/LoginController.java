@@ -29,7 +29,7 @@ import java.io.FileReader;
 import java.io.IOException;
 
 public class LoginController {
-    Bank bank = new Bank();
+    static Bank bank = new Bank();
     @FXML
     Button focus;
     @FXML
@@ -125,8 +125,7 @@ public class LoginController {
     public void homeScreen(Account User){
         try {
 //            new Alert("Welcome "+ User.getAccountOwner(),"Login Successful!","green");
-            HomeController.CurrentUser = new Account(User.getAccountId(), User.getAccountOwner(),
-                    User.getBalance(), User.getPassword());
+            HomeController.CurrentUser = Bank.getAccount(User.getAccountId());
             Parent root = FXMLLoader.load(getClass().getResource("Home.fxml"));
             Scene homeScene = new Scene(root, 1280, 750, Color.TRANSPARENT);
             Stage window = (Stage)(loginBtn.getScene().getWindow());
@@ -155,20 +154,23 @@ public class LoginController {
         }
     }
     public void initiateAccounts(){
-        bank.addAccount(new Account("0", "John Doe", 10000.0, "0"));
-        bank.addAccount(new Account("12345678", "John Doe", 1000.0, "password1"));
-        bank.addAccount(new Account("23456789", "Jane Smith", 1500.0, "password2"));
-        bank.addAccount(new Account("34567890", "Alice Johnson", 2000.0, "password3"));
-        bank.addAccount(new Account("45678901", "Bob Brown", 1200.0, "password4"));
-        bank.addAccount(new Account("56789012", "Emma Lee", 1800.0, "password5"));
-        bank.addAccount(new Account("67890123", "Michael Wilson", 1700.0, "password6"));
-        bank.addAccount(new Account("78901234", "Sophia Garcia", 1600.0, "password7"));
-        bank.addAccount(new Account("89012345", "David Martinez", 1400.0, "password8"));
-        bank.addAccount(new Account("90123456", "Olivia Hernandez", 1300.0, "password9"));
-        bank.addAccount(new Account("01234567", "Ethan Taylor", 1100.0, "password10"));
+        bank.addAccount(new Account("0", "7mada", 10000.0, "0"));
+        bank.addAccount(new Account("1", "Omar", 1000000.0, "1"));
+        bank.addAccount(new Account("12345678", "John Doe", 1000.0, "pass1"));
+        bank.addAccount(new Account("23456789", "Jane Smith", 1500.0, "pass2"));
+        bank.addAccount(new Account("34567890", "Alice Johnson", 2000.0, "pass3"));
+        bank.addAccount(new Account("45678901", "Bob Brown", 1200.0, "pass4"));
+        bank.addAccount(new Account("56789012", "Emma Lee", 1800.0, "pass5"));
+        bank.addAccount(new Account("67890123", "Michael Wilson", 1700.0, "pass6"));
+        bank.addAccount(new Account("78901234", "Sophia Garcia", 1600.0, "pass7"));
+        bank.addAccount(new Account("89012345", "David Martinez", 1400.0, "pass8"));
+        bank.addAccount(new Account("90123456", "Olivia Hernandez", 1300.0, "pass9"));
+        bank.addAccount(new Account("01234567", "Ethan Taylor", 1100.0, "pass10"));
     }
     public void initialize(){
-        initiateAccounts();
+        if (Bank.accounts.size() == 0)
+            initiateAccounts();
+        System.out.println(Bank.accounts.size());
         anchorPane.setOnMousePressed(event -> {
             xOffset = event.getSceneX();
             yOffset = event.getSceneY();

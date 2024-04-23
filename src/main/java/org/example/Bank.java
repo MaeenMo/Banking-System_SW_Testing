@@ -10,7 +10,7 @@ public class Bank {
         accounts.add(account);
     }
 
-    public Account getAccount(String accountId) {
+    public static Account getAccount(String accountId) {
         for (Account a:accounts){
             if (a.getAccountId().equals(accountId)){
                 return a;
@@ -42,7 +42,7 @@ class Account {
         this.password=password;
     }
 
-    public void processTransaction(Account toAccount,double amount, String transactionDate, String TransactionType) {
+    public boolean processTransaction(Account toAccount,double amount, String transactionDate, String TransactionType) {
         if (this.getBalance() >= amount) {
             if (amount > 0) {
                 Transaction t = new Transaction(this, toAccount, amount, transactionDate, TransactionType);
@@ -50,29 +50,31 @@ class Account {
                 toAccount.balance += amount;
                 Bank.transactions.add(t);
             } else {
-                System.out.println("Amount must be positive.");
+                return false;
             }
         } else {
-            System.out.println("Transfer failed: Insufficient funds.");
+            return false;
         }
+        return true;
     }
 
-    public void processTransaction(double amount, String transactionDate, String TransactionType) {
+    public boolean processTransaction(double amount, String transactionDate, String TransactionType) {
         if (TransactionType.equals("D")){
             if (amount > 0) {
                 balance += amount;
                 Bank.transactions.add(new Transaction(this, amount, transactionDate, TransactionType));
             } else {
-                System.out.println("Amount must be positive.");
+                return false;
             }
         }else{
             if (amount <= balance) {
                 balance -= amount;
                 Bank.transactions.add(new Transaction(this, amount, transactionDate, TransactionType));
             } else {
-                System.out.println("Insufficient balance.");
+                return false;
             }
         }
+        return true;
     }
 
     public void takeLoan(String loanId, double loanAmount, double intR, int p) {

@@ -26,11 +26,30 @@ import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
 import javafx.scene.text.Text;
+import javafx.util.StringConverter;
+import javafx.util.converter.DoubleStringConverter;
+import javafx.util.converter.IntegerStringConverter;
 
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.function.UnaryOperator;
 
 public class HomeController {
+    public static boolean isNumeric(String strNum) {
+        if (strNum == null) {
+            return false;
+        }
+        try {
+            double d = Double.parseDouble(strNum);
+        } catch (NumberFormatException nfe) {
+            return false;
+        }
+        return true;
+    }
     Button tempBtnIgnore = new Button();
     Label tempLabelIgnore = new Label();
     Button tempBtnIgnoreRent = new Button();
@@ -52,108 +71,49 @@ public class HomeController {
     Label accNoDisplay;
     @FXML
     Pane homePane;
-//    @FXML
-//    Pane mainPane;
-//    @FXML
-//    Pane settingsPane;
-//    @FXML
-//    GridPane gridPane;
-//    @FXML
-//    HBox settingsBtns;
     @FXML
     Pane transactionsPane;
     @FXML
     Pane loanPane;
     @FXML
-    VBox transactionMenu;
+    GridPane transactionsMenu;
     @FXML
     VBox loanMenu;
     @FXML
     Pane depositPane;
     @FXML
+    TextField depAmount;
+    @FXML
+    Label depErrMsg;
+    @FXML
     Pane withdrawPane;
     @FXML
+    TextField withAmount;
+    @FXML
+    Label withErrMsg;
+    @FXML
     Pane transferPane;
+    @FXML
+    TextField transAmount;
+    @FXML
+    TextField destAcc;
+    @FXML
+    Label transErrMsg;
+    @FXML
+    Pane viewTransacPane;
     @FXML
     Pane disburseLoanPane;
     @FXML
     Pane viewLoansPane;
-
     @FXML
     Text accBalance1;
     @FXML
     Text accBalance2;
     @FXML
     JFXComboBox<String> takenLoan;
-    @FXML
-    JFXButton addUserBtn;
-    @FXML
-    JFXButton addBookBtn;
-    @FXML
-    JFXButton bookOLBtn;
-    @FXML
-    TextField userNameField;
-    @FXML
-    PasswordField passField;
-    @FXML
-    TextField passFieldShown;
-    @FXML
-    ImageView hideIco;
-    @FXML
-    ImageView showIco;
-    @FXML
-    Button showPassBtn;
-    @FXML
-    JFXComboBox type;
-    String Type;
-    @FXML
-    TextField firstnameField;
-    @FXML
-    Label usernameErr;
-    @FXML
-    Label passErr;
-    @FXML
-    Label typeErr;
-    @FXML
-    Label firstnameErr;
-    @FXML
-    Label lastnameErr;
-    @FXML
-    Label emailErr;
-    @FXML
-    Label cellphoneErr;
-    @FXML
-    Label addressErr;
-    @FXML
-    TextField lastnameField;
-    @FXML
-    TextField emailField;
-    @FXML
-    TextField cellphoneField;
-    @FXML
-    TextField addressField;
-    @FXML
-    JFXCheckBox blockedCB;
-    @FXML
-    TextField booktitleField;
-    @FXML
-    Label bookfieldErr;
-    @FXML
-    JFXButton addBtn1;
-    @FXML
-    Label userAdded;
-    @FXML
-    Label bookAdded;
-    @FXML
-    Button saveBtn;
-    @FXML
-    Button backBtn;
-    @FXML
-    Label userEdited;
-//    @FXML
-//    ListView<HBoxCell> olListview;
-    @FXML
-    Line line1;
+    SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+    Date date = new Date();
+
     @FXML
     Button logoutBtn;
     Scene loginScene;
@@ -176,86 +136,14 @@ public class HomeController {
     public void back(){
         setvisible("back");
     }
-    public void newUser(){
-        clearFields();
-        setvisible("settings");
-
-        addUserBtn.getStyleClass().add("selected");
-        addBookBtn.getStyleClass().remove("selected");
-        bookOLBtn.getStyleClass().remove("selected");
-        showPassBtn.setVisible(true);
-        showIco.setVisible(true);
-        hideIco.setVisible(true);
-        showPassBtn.setVisible(true);
-//        adduserPane.setVisible(true);
-//        gridPane.setVisible(true);
-        userAdded.setVisible(true);
-        addBtn1.setVisible(true);
-    }
-    public void saveUser(){
-//        userAdded.setText("");
-//        if (User.validate(userNameField,usernameErr,passField,passFieldShown,passErr,type.getValue(),typeErr,firstnameField,firstnameErr,lastnameField,lastnameErr,emailField,emailErr,cellphoneField,cellphoneErr,addressField,addressErr)){
-//            try {
-//                type.getValue().toString();
-//                Type = type.getValue().toString();
-//            } catch (NullPointerException | NumberFormatException e) {
-//            }
-//            try {
-//                search.viewallUsers();
-//                for (String i : Search.usersArr) {
-//                    if (userNameField.getText().equals(i)) {
-//                        userExist = true;
-//                        break;
-//                    } else userExist = false;
-//                }
-//                if (!userExist) {
-//                    passField.setText(passFieldShown.getText());
-//                    librarian.addUser(new User(userNameField.getText(), passField.getText(), Type, firstnameField.getText(), lastnameField.getText(), addressField.getText(), cellphoneField.getText(), emailField.getText(), false).getUserData());
-//                    clearFields();
-//                    userAdded.setText("User added");
-//                    userAdded.setStyle("-fx-text-fill:limegreen");
-//                    userExist = false;
-//                } else {
-//                    userAdded.setText("Username already exists");
-//                    userAdded.setStyle("-fx-text-fill:red");
-//                }
-//            } catch (IOException | NumberFormatException e) {
-//            }
-//        }
-    }
     private void clearFields() {
-//        searchField.clear();
-        userNameField.clear();
-        type.getSelectionModel().clearSelection();
-        passField.clear();
-        firstnameField.clear();
-        lastnameField.clear();
-        emailField.clear();
-        cellphoneField.clear();
-        addressField.clear();
-        booktitleField.clear();
-        blockedCB.setSelected(false);
-        typeErr.setText("");
-        usernameErr.setText("");
-        defaultStyle(userNameField);
-        passErr.setText("");
-        defaultStyle(passField);
-        passFieldShown.setText("");
-        defaultStyle(passFieldShown);
-        firstnameErr.setText("");
-        defaultStyle(firstnameField);
-        lastnameErr.setText("");
-        defaultStyle(lastnameField);
-        emailErr.setText("");
-        defaultStyle(emailField);
-        cellphoneErr.setText("");
-        defaultStyle(cellphoneField);
-        addressErr.setText("");
-        defaultStyle(addressField);
-        userAdded.setText("");
-        bookfieldErr.setText("");
-        defaultStyle(booktitleField);
-        bookAdded.setText("");
+        depAmount.clear();
+        withAmount.clear();
+        transAmount.clear();
+        destAcc.clear();
+        depErrMsg.setText("");
+        withErrMsg.setText("");
+        transErrMsg.setText("");
     }
     private void defaultStyle(TextField field){
         field.setStyle("-fx-background-radius:20;-fx-border-radius:20;-fx-focus-color:transparent;-fx-faint-focus-color:transparent;");
@@ -445,6 +333,25 @@ public class HomeController {
 //        }
 //    }
 
+    public void updateBalance(){
+        BigDecimal result= BigDecimal.valueOf(CurrentUser.getBalance());
+        BigDecimal divisor1 = new BigDecimal(1000000);
+        BigDecimal divisor2 = new BigDecimal(1000000000);
+        if(CurrentUser.getBalance()<1000000) {
+            accBalance1.setText("$" + CurrentUser.getBalance());
+            accBalance2.setText("$" + CurrentUser.getBalance());
+        }
+        else if(CurrentUser.getBalance()<1000000000){
+            result=result.divide(divisor1);
+            accBalance1.setText("$" + result.setScale(2, RoundingMode.HALF_UP)+"M");
+            accBalance2.setText("$" + result.setScale(2, RoundingMode.HALF_UP)+"M");
+        }
+        else{
+            result=result.divide(divisor2);
+            accBalance1.setText("$" + result.setScale(2, RoundingMode.HALF_UP)+"B");
+            accBalance2.setText("$" + result.setScale(2, RoundingMode.HALF_UP)+"B");
+        }
+    }
     public void displayTransactionsMenu(ActionEvent actionEvent) {
         setvisible("transaction");
     }
@@ -465,14 +372,57 @@ public class HomeController {
         setvisible("transfer");
     }
 
-    public void deposit(ActionEvent actionEvent) {
+    public void transactionsView(ActionEvent actionEvent) {
+        setvisible("viewTransac");
+    }
 
+    public void deposit(ActionEvent actionEvent) {
+        if (depAmount.getText().isEmpty()){
+            labelMsg(depErrMsg,"Please Enter An Amount","red");
+        }
+        else {
+            boolean isSuccess = CurrentUser.processTransaction(Double.parseDouble(depAmount.getText()), formatter.format(date),"D");
+            if (isSuccess) labelMsg(depErrMsg,"Successfully Deposited","limegreen");
+            else labelMsg(depErrMsg,"Invalid Amount","red");
+            updateBalance();
+            depAmount.clear();
+        }
     }
 
     public void withdraw(ActionEvent actionEvent) {
+        if (withAmount.getText().isEmpty()){
+            labelMsg(withErrMsg,"Please Enter An Amount","red");
+        }
+        else {
+            boolean isSuccess = CurrentUser.processTransaction(Double.parseDouble(withAmount.getText()), formatter.format(date), "W");
+            if (isSuccess) labelMsg(withErrMsg, "Successfully Withdrawn", "limegreen");
+            else labelMsg(withErrMsg, "Error! Couldn't Complete the Withdraw", "red");
+            updateBalance();
+            withAmount.clear();
+        }
     }
 
     public void transfer(ActionEvent actionEvent) {
+        if (transAmount.getText().isEmpty() && destAcc.getText().isEmpty()){
+            labelMsg(transErrMsg,"Please Enter Amount and Destination Account","red");
+        }
+        else if (transAmount.getText().isEmpty()){
+            labelMsg(transErrMsg,"Please Enter An Amount","red");
+        }
+        else if (destAcc.getText().isEmpty()){
+            labelMsg(transErrMsg,"Please Enter the Destination Account","red");
+        }
+        else {
+            System.out.println(Bank.getAccount(destAcc.getText()));
+            System.out.println(Bank.accounts.get(3));
+            boolean isSuccess = CurrentUser.processTransaction(Bank.getAccount(destAcc.getText()),Double.parseDouble(transAmount.getText()),formatter.format(date),"T");
+            if (isSuccess) labelMsg(transErrMsg,"Successfully Transferred","limegreen");
+            else labelMsg(transErrMsg,"Error! Couldn't Complete the Transfer","red");
+            updateBalance();
+            transAmount.clear();
+            destAcc.clear();
+        }
+
     }
 
     public void disburseloanView(ActionEvent actionEvent) {
@@ -480,10 +430,23 @@ public class HomeController {
     }
 
     public void disburseLoan(ActionEvent actionEvent) {
+//        if()
+//        dispLoanErrMsg.setText("Choose the type and amount of loan"); // Error: EMPTY Type of Loan & Amount
+//        dispLoanErrMsg.setText("Enter Amount"); // Error: EMPTY Amount
+//        dispLoanErrMsg.setText("Choose Type of loan"); // Error: EMPTY Type of Loan
+//        if (isSuccess) dispLoanErrMsg.setText("Error! Couldn't Complete the Loan"); // Error: Disburse Loan (From Return False)
+//        else dispLoanErrMsg.setText("Loan Taken Successfully"); // Success Disburse Loan (From Return True)
+        updateBalance();
     }
 
     public void viewLoansView(ActionEvent actionEvent) {
         setvisible("viewloans");
+    }
+
+    public void payLoan(ActionEvent actionEvent) {
+//        if (isSuccess) payLoanErrMsg.setText("Error! Insufficient Balance"); // Error: Pay Loan (From Return False)
+//        else payLoanErrMsg.setText("Loan Paid Successfully"); // Success Pay Loan (From Return True)
+        updateBalance();
     }
 
 //    public static class HBoxCell extends HBox {
@@ -575,6 +538,7 @@ public class HomeController {
     public void logout(){
         try {
             CurrentUser = null;
+            setvisible("none");
             Parent root = FXMLLoader.load(getClass().getResource("Login.fxml"));
             loginScene = new Scene(root, 1280, 720, Color.TRANSPARENT);
             Stage window = (Stage)(logoutBtn.getScene().getWindow());
@@ -584,6 +548,10 @@ public class HomeController {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+    private void labelMsg(Label label, String msg, String color){
+        label.setText(msg);
+        label.setStyle("-fx-text-fill:"+color);
     }
     private void setvisible(String window){
         switch (window) {
@@ -606,6 +574,9 @@ public class HomeController {
             case "transfer" -> {
                 transferPane.setVisible(true);
             }
+            case "viewTransac" -> {
+                viewTransacPane.setVisible(true);
+            }
             case "disburse" -> {
                 disburseLoanPane.setVisible(true);
             }
@@ -616,8 +587,10 @@ public class HomeController {
                 depositPane.setVisible(false);
                 withdrawPane.setVisible(false);
                 transferPane.setVisible(false);
+                viewTransacPane.setVisible(false);
                 disburseLoanPane.setVisible(false);
                 viewLoansPane.setVisible(false);
+                clearFields();
             }
             case "none" -> {
                 transactionsPane.setVisible(false);
@@ -625,8 +598,10 @@ public class HomeController {
                 depositPane.setVisible(false);
                 withdrawPane.setVisible(false);
                 transferPane.setVisible(false);
+                viewTransacPane.setVisible(false);
                 disburseLoanPane.setVisible(false);
                 viewLoansPane.setVisible(false);
+                clearFields();
             }
         }
     }
@@ -634,19 +609,49 @@ public class HomeController {
         if (CurrentUser != null) {
             usernameDisplay.setText(CurrentUser.getAccountOwner());
             accNoDisplay.setText(CurrentUser.getAccountId());
-            accBalance1.setText("$"+CurrentUser.getBalance()); //account balance here <--
-            accBalance2.setText("$"+CurrentUser.getBalance()); //account balance here <--
+            updateBalance();
         }
         takenLoan.getItems().addAll("1 Year with 10% interest","3 Years With 15% interest","5 Years with 20% interest","10 Years with 30% interest");
-//        mainPane.setVisible(false);
-//        settingsPane.setVisible(false);
-//        settingsBtns.setVisible(false);
-//        adduserPane.setVisible(false);
-//        bookListview.setVisible(false);
-//        userListview.setVisible(false);
-//        bookOL.setVisible(false);
-//        type.getItems().addAll("Librarian","Reader");
         setvisible("none");
+        UnaryOperator<TextFormatter.Change> filter1 = change -> {
+            String text = change.getControlNewText();
+            if (text.isEmpty()) {
+                return change;
+            }
+            if (text.matches("^\\d+(\\.\\d{0,2})?")) {
+                return change; // Accept valid double numbers with up to 2 decimal places
+            }
+            return null;
+        };
+        UnaryOperator<TextFormatter.Change> filter2 = change -> {
+            String text = change.getControlNewText();
+            if (text.isEmpty()) {
+                return change;
+            }
+            if (text.matches("\\d{0,8}")) {
+                return change; // Accept valid 8 digit account numbers
+            }
+            return null;
+        };
+
+        TextFormatter<Double> amount1 = new TextFormatter<>(new DoubleStringConverter(), null, filter1);
+        TextFormatter<Double> amount2 = new TextFormatter<>(new DoubleStringConverter(), null, filter1);
+        TextFormatter<Double> amount3 = new TextFormatter<>(new DoubleStringConverter(), null, filter1);
+        TextFormatter<String> destAccID = new TextFormatter<>(new StringConverter<String>() {
+            @Override
+            public String toString(String s) {
+                return s;
+            }
+
+            @Override
+            public String fromString(String s) {
+                return s;
+            }
+        }, null, filter2);
+        depAmount.setTextFormatter(amount1);
+        withAmount.setTextFormatter(amount2);
+        transAmount.setTextFormatter(amount3);
+        destAcc.setTextFormatter(destAccID);
         anchorPane.setOnMousePressed(event -> {
             xOffset = event.getSceneX();
             yOffset = event.getSceneY();
