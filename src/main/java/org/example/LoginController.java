@@ -168,9 +168,11 @@ public class LoginController {
         bank.addAccount(new Account("01234567", "Ethan Taylor", 1100.0, "pass10"));
     }
     public void initialize(){
+        usernameField.setStyle("-fx-text-fill: white;-fx-prompt-text-fill: white;");
+        passwordField.setStyle("-fx-text-fill: white;-fx-prompt-text-fill: white;");
+        passwordShown.setStyle("-fx-text-fill: white;-fx-prompt-text-fill: white;");
         if (Bank.accounts.size() == 0)
             initiateAccounts();
-        System.out.println(Bank.accounts.size());
         anchorPane.setOnMousePressed(event -> {
             xOffset = event.getSceneX();
             yOffset = event.getSceneY();

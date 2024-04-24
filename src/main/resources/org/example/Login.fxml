@@ -49,11 +49,11 @@
       </Button>
       <VBox layoutX="505.0" layoutY="322.0" spacing="50.0">
          <children>
-            <JFXTextField fx:id="usernameField" focusColor="WHITE" labelFloat="true" onKeyPressed="#enter1" prefHeight="25.0" prefWidth="270.0" promptText="Username" unFocusColor="#d0d0d0">
+            <JFXTextField fx:id="usernameField" focusColor="WHITE" labelFloat="true" onKeyPressed="#enter1" prefHeight="25.0" prefWidth="270.0" promptText="Username" unFocusColor="WHITE">
                <font>
                   <Font name="System Bold" size="19.0" />
                </font></JFXTextField>
-            <JFXPasswordField fx:id="passwordField" focusColor="WHITE" labelFloat="true" onKeyPressed="#enter2" prefHeight="40.0" prefWidth="270.0" promptText="Password" unFocusColor="#d0d0d0">
+            <JFXPasswordField fx:id="passwordField" focusColor="WHITE" labelFloat="true" onKeyPressed="#enter2" prefHeight="40.0" prefWidth="270.0" promptText="Password" unFocusColor="WHITE">
                <font>
                   <Font name="System Bold" size="19.0" />
                </font>

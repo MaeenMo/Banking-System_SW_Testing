@@ -29,15 +29,15 @@ public class TransactionTest {
         assertEquals("Transaction ID: " + t1.getTransactionId() + ", Date: " + t1.getTransactionDate() +
                              ", From: " + t1.getTransactionFromAccountId() + ", To: " + t1.getTransactionToAccountId() +
                              ", Amount: " + t1.getTransactionAmount()
-                            ,t1.getTransactionDetails());
+                            ,t1.getTransactionDetails(t1.getTransactionType()));
     }
 
     @Test
     @DisplayName("Test Get Transactions Details For t2")
-    public void testGetTransactionDetailsT(){
+    public void testGetTransactionDetailsT2(){
         assertEquals("Transaction ID: " + t2.getTransactionId() + ", Date: " + t2.getTransactionDate() +
-                        ", From: " + t2.getTransactionFromAccountId() + ", To: " + t2.getTransactionToAccountId() +
+                        ", From: " + t2.getTransactionFromAccountId() +
                         ", Amount: " + t2.getTransactionAmount()
-                ,t2.getTransactionDetails());
+                ,t2.getTransactionDetails(t2.getTransactionType()));
     }
 }

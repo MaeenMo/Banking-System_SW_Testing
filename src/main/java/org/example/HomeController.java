@@ -86,11 +86,15 @@ public class HomeController {
     @FXML
     Label depErrMsg;
     @FXML
+    JFXButton depositBtn2;
+    @FXML
     Pane withdrawPane;
     @FXML
     TextField withAmount;
     @FXML
     Label withErrMsg;
+    @FXML
+    JFXButton withdrawBtn2;
     @FXML
     Pane transferPane;
     @FXML
@@ -100,9 +104,19 @@ public class HomeController {
     @FXML
     Label transErrMsg;
     @FXML
+    JFXButton transferBtn2;
+    @FXML
     Pane viewTransacPane;
     @FXML
     Pane disburseLoanPane;
+    @FXML
+    TextField disbAmount;
+    @FXML
+    JFXComboBox<String> takenLoan;
+    @FXML
+    Label disbLoanErrMsg;
+    @FXML
+    JFXButton disburseLoanBtn2;
     @FXML
     Pane viewLoansPane;
     @FXML
@@ -110,14 +124,10 @@ public class HomeController {
     @FXML
     Text accBalance2;
     @FXML
-    JFXComboBox<String> takenLoan;
+    Button logoutBtn;
     SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
     Date date = new Date();
-
-    @FXML
-    Button logoutBtn;
     Scene loginScene;
-    boolean visible = false;
     @FXML
     public void closeWindow(){
         System.exit(0);
@@ -128,11 +138,38 @@ public class HomeController {
     }
     private double xOffset = 0;
     private double yOffset = 0;
-//    public void enter(KeyEvent e){
-//        if (e.getCode().equals(KeyCode.ENTER));
-//
-//    }
 
+    public void depEnter(KeyEvent keyEvent) {
+        if (keyEvent.getCode().equals(KeyCode.ENTER)) {
+            depositBtn2.fire();
+        }
+    }
+    public void withEnter(KeyEvent keyEvent) {
+        if (keyEvent.getCode().equals(KeyCode.ENTER)) {
+            withdrawBtn2.fire();
+        }
+    }
+    public void transEnter(KeyEvent keyEvent) {
+        if (keyEvent.getCode().equals(KeyCode.ENTER)) {
+            destAcc.requestFocus();
+        }
+    }
+    public void destEnter(KeyEvent keyEvent) {
+        if (keyEvent.getCode().equals(KeyCode.ENTER)) {
+            transferBtn2.fire();
+        }
+    }
+    public void disbEnter(KeyEvent keyEvent) {
+        if (keyEvent.getCode().equals(KeyCode.ENTER)) {
+            takenLoan.requestFocus();
+            takenLoan.show();
+        }
+    }
+    public void loanTypeEnter(KeyEvent keyEvent) {
+        if (keyEvent.getCode().equals(KeyCode.ENTER)) {
+            disburseLoanBtn2.fire();
+        }
+    }
     public void back(){
         setvisible("back");
     }
@@ -141,9 +178,12 @@ public class HomeController {
         withAmount.clear();
         transAmount.clear();
         destAcc.clear();
+        disbAmount.clear();
         depErrMsg.setText("");
         withErrMsg.setText("");
         transErrMsg.setText("");
+        disbLoanErrMsg.setText("");
+        takenLoan.getSelectionModel().clearSelection();
     }
     private void defaultStyle(TextField field){
         field.setStyle("-fx-background-radius:20;-fx-border-radius:20;-fx-focus-color:transparent;-fx-faint-focus-color:transparent;");
@@ -381,7 +421,7 @@ public class HomeController {
             labelMsg(depErrMsg,"Please Enter An Amount","red");
         }
         else {
-            boolean isSuccess = CurrentUser.processTransaction(Double.parseDouble(depAmount.getText()), formatter.format(date),"D");
+            boolean isSuccess = CurrentUser.processTransaction(Double.parseDouble(depAmount.getText()),"D");
             if (isSuccess) labelMsg(depErrMsg,"Successfully Deposited","limegreen");
             else labelMsg(depErrMsg,"Invalid Amount","red");
             updateBalance();
@@ -394,7 +434,7 @@ public class HomeController {
             labelMsg(withErrMsg,"Please Enter An Amount","red");
         }
         else {
-            boolean isSuccess = CurrentUser.processTransaction(Double.parseDouble(withAmount.getText()), formatter.format(date), "W");
+            boolean isSuccess = CurrentUser.processTransaction(Double.parseDouble(withAmount.getText()), "W");
             if (isSuccess) labelMsg(withErrMsg, "Successfully Withdrawn", "limegreen");
             else labelMsg(withErrMsg, "Error! Couldn't Complete the Withdraw", "red");
             updateBalance();
@@ -413,9 +453,7 @@ public class HomeController {
             labelMsg(transErrMsg,"Please Enter the Destination Account","red");
         }
         else {
-            System.out.println(Bank.getAccount(destAcc.getText()));
-            System.out.println(Bank.accounts.get(3));
-            boolean isSuccess = CurrentUser.processTransaction(Bank.getAccount(destAcc.getText()),Double.parseDouble(transAmount.getText()),formatter.format(date),"T");
+            boolean isSuccess = CurrentUser.processTransaction(Bank.getAccount(destAcc.getText()),Double.parseDouble(transAmount.getText()),"T");
             if (isSuccess) labelMsg(transErrMsg,"Successfully Transferred","limegreen");
             else labelMsg(transErrMsg,"Error! Couldn't Complete the Transfer","red");
             updateBalance();
@@ -430,13 +468,24 @@ public class HomeController {
     }
 
     public void disburseLoan(ActionEvent actionEvent) {
-//        if()
-//        dispLoanErrMsg.setText("Choose the type and amount of loan"); // Error: EMPTY Type of Loan & Amount
-//        dispLoanErrMsg.setText("Enter Amount"); // Error: EMPTY Amount
-//        dispLoanErrMsg.setText("Choose Type of loan"); // Error: EMPTY Type of Loan
-//        if (isSuccess) dispLoanErrMsg.setText("Error! Couldn't Complete the Loan"); // Error: Disburse Loan (From Return False)
-//        else dispLoanErrMsg.setText("Loan Taken Successfully"); // Success Disburse Loan (From Return True)
-        updateBalance();
+        if (disbAmount.getText().isEmpty() && takenLoan.getValue() == null){
+            labelMsg(disbLoanErrMsg,"Please Enter Amount and Select Loan Type","red");
+        }
+        else if (disbAmount.getText().isEmpty()){
+            labelMsg(disbLoanErrMsg,"Please Enter An Amount","red");
+        }
+        else if (takenLoan.getValue() == null){
+            labelMsg(disbLoanErrMsg,"Please Select Loan Type","red");
+        }
+        else {
+            boolean isSuccess = CurrentUser.takeLoan(getTakeLoanId(),Double.parseDouble(disbAmount.getText()));
+            if (isSuccess) labelMsg(disbLoanErrMsg,"Loan Taken Successfully","limegreen");
+            else labelMsg(disbLoanErrMsg,"Error! Couldn't Complete the Loan","red");
+            updateBalance();
+            disbAmount.clear();
+            takenLoan.getSelectionModel().clearSelection();
+        }
+
     }
 
     public void viewLoansView(ActionEvent actionEvent) {
@@ -605,12 +654,38 @@ public class HomeController {
             }
         }
     }
+    private void initialzeLoans(){
+        Bank.loans.add(new Loan("L1", 0, null, 10, 1));
+        Bank.loans.add(new Loan("L2", 0, null, 15, 3));
+        Bank.loans.add(new Loan("L3", 0, null, 20, 5));
+        Bank.loans.add(new Loan("L4", 0, null, 30, 10));
+    }
+    private String getTakeLoanId(){
+        switch (takenLoan.getValue()) {
+            case "1 Year with 10% interest" -> {
+                return "L1";
+            }
+            case "3 Years With 15% interest" -> {
+                return "L2";
+            }
+            case "5 Years with 20% interest" -> {
+                return "L3";
+            }
+            case "10 Years with 30% interest" -> {
+                return "L4";
+            }
+            default -> {
+                return null;
+            }
+        }
+    }
     public void initialize(){
         if (CurrentUser != null) {
             usernameDisplay.setText(CurrentUser.getAccountOwner());
             accNoDisplay.setText(CurrentUser.getAccountId());
             updateBalance();
         }
+        initialzeLoans();
         takenLoan.getItems().addAll("1 Year with 10% interest","3 Years With 15% interest","5 Years with 20% interest","10 Years with 30% interest");
         setvisible("none");
         UnaryOperator<TextFormatter.Change> filter1 = change -> {
@@ -637,6 +712,7 @@ public class HomeController {
         TextFormatter<Double> amount1 = new TextFormatter<>(new DoubleStringConverter(), null, filter1);
         TextFormatter<Double> amount2 = new TextFormatter<>(new DoubleStringConverter(), null, filter1);
         TextFormatter<Double> amount3 = new TextFormatter<>(new DoubleStringConverter(), null, filter1);
+        TextFormatter<Double> amount4 = new TextFormatter<>(new DoubleStringConverter(), null, filter1);
         TextFormatter<String> destAccID = new TextFormatter<>(new StringConverter<String>() {
             @Override
             public String toString(String s) {
@@ -651,6 +727,7 @@ public class HomeController {
         depAmount.setTextFormatter(amount1);
         withAmount.setTextFormatter(amount2);
         transAmount.setTextFormatter(amount3);
+        disbAmount.setTextFormatter(amount4);
         destAcc.setTextFormatter(destAccID);
         anchorPane.setOnMousePressed(event -> {
             xOffset = event.getSceneX();
