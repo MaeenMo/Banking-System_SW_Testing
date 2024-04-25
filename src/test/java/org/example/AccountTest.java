@@ -103,7 +103,7 @@ public class AccountTest {
     public void testTakeLoan3Years() {
         double oldBalance = a1.getBalance();
         a1.takeLoan("L2", 10000);
-        a1.takenLoans.getLast().setStartYear(2022);
+        a1.takenLoans.getLast().setStartYear(2020);
         assertTrue(a1.takenLoans.getLast().getLoanId().equals("L2"));
         assertEquals(a1.getBalance(), 10000+oldBalance);
     }
@@ -113,6 +113,7 @@ public class AccountTest {
     @DisplayName("Test pay 3 years loan fail")
     public void testPayLoan3Years() {
         double oldBalance = a1.getBalance();
+        System.out.println(a1.getBalance());
         assertFalse(a1.payLoan("L2"));
         assertFalse(a1.getBalance() == oldBalance - (10000 + (10000*0.1)));
     }

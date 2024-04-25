@@ -34,9 +34,10 @@ class Account {
     private String accountOwner;
     private double balance;
     private String password;
+    protected ArrayList<Transaction> transactionList = new ArrayList<>();
     protected ArrayList<Loan> takenLoans = new ArrayList<>();
     SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-    Date date = new Date();
+
 
     public Account(String accountId, String accountOwner, double initialBalance,String password) {
         this.accountId = accountId;
@@ -46,12 +47,11 @@ class Account {
     }
 
     public boolean processTransaction(Account toAccount,double amount, String TransactionType) {
-        if (this.getBalance() >= amount) {
+        if (this.getBalance() >= amount && this != toAccount) {
             if (amount > 0) {
-                Transaction t = new Transaction(this, toAccount, amount, formatter.format(date), TransactionType);
                 balance -= amount;
                 toAccount.balance += amount;
-                Bank.transactions.add(t);
+                Bank.transactions.add(new Transaction(this, toAccount, amount, formatter.format(new Date()), TransactionType));
             } else {
                 return false;
             }
@@ -65,7 +65,7 @@ class Account {
         if (transactionType.equals("D")){
             if (amount > 0) {
                 balance += amount;
-                Bank.transactions.add(new Transaction(this, amount, formatter.format(date), transactionType));
+                Bank.transactions.add(new Transaction(this, amount, formatter.format(new Date()), transactionType));
             } else {
                 return false;
             }
@@ -73,21 +73,21 @@ class Account {
         else if (transactionType.equals("DL")){
             if (amount > 0) {
                 balance += amount;
-                Bank.transactions.add(new Transaction(this, amount, formatter.format(date), transactionType));
+                Bank.transactions.add(new Transaction(this, amount, formatter.format(new Date()), transactionType));
             } else {
                 return false;
             }
         } else if (transactionType.equals("PL")){
             if (amount <= balance) {
                 balance -= amount;
-                Bank.transactions.add(new Transaction(this, amount, formatter.format(date), transactionType));
+                Bank.transactions.add(new Transaction(this, amount, formatter.format(new Date()), transactionType));
             } else {
                 return false;
             }
         } else{
             if (amount <= balance) {
                 balance -= amount;
-                Bank.transactions.add(new Transaction(this, amount, formatter.format(date), transactionType));
+                Bank.transactions.add(new Transaction(this, amount, formatter.format(new Date()), transactionType));
             } else {
                 return false;
             }
@@ -155,121 +155,11 @@ class Account {
     public String getPassword(){
         return password;
     }
-}
-class Transaction {
-    private String transactionId;
-    private String transactionType;
-    private Account fromAccount;
-    private Account toAccount;
-    private double amount;
-    private String transactionDate;
-
-    public Transaction(Account fromAccount, Account toAccount, double amount, String transactionDate, String transactionType) {
-        this.transactionId = transactionType + new Random().ints(10);
-        this.fromAccount = fromAccount;
-        this.toAccount = toAccount;
-        this.amount = amount;
-        this.transactionDate = transactionDate;
-        this.transactionType = transactionType;
+    public ArrayList<Transaction> getTransactionList() {
+        return transactionList;
     }
-
-    public Transaction(Account fromAccount, double amount, String transactionDate, String transactionType) {
-        this.transactionId = transactionType + new Random().ints(10);
-        this.fromAccount = fromAccount;
-        this.toAccount = null;
-        this.amount = amount;
-        this.transactionDate = transactionDate;
-        this.transactionType = transactionType;
-    }
-    public String getTransactionDetails(String transactionType) {
-        if (transactionType == "T")
-            return "Transaction ID: " + transactionId + ", Date: " + transactionDate +
-                    ", From: " + fromAccount.getAccountId() + ", To: " + toAccount.getAccountId() + ", Amount: " + amount;
-        else
-            return "Transaction ID: " + transactionId + ", Date: " + transactionDate +
-                    ", From: " + fromAccount.getAccountId() + ", Amount: " + amount;
-    }
-
-    public String getTransactionId() {
-        return this.transactionId;
-    }
-    public String getTransactionDate() {
-        return this.transactionDate;
-    }
-    public String getTransactionFromAccountId() {
-        return this.fromAccount.getAccountId();
-    }
-    public String getTransactionToAccountId() {
-        return this.toAccount.getAccountId();
-    }
-    public double getTransactionAmount() {
-        return this.amount;
-    }
-    public String getTransactionType() {
-        return this.transactionType;
-    }
-}
-
-class Loan {
-    private String loanId;
-    private double loanAmount;
-    private Account loanAccount;
-    private int period;
-    private int startYear;
-    private double interestRate;
-
-    public Loan(String loanId, double loanAmount, Account loanAccount, double intR, int p) {
-        this.loanId = loanId;
-        this.interestRate = intR;
-        this.period = p;
-        this.loanAmount = loanAmount;
-        this.loanAccount = loanAccount;
-    }
-
-    public String getLoanId() {
-        return loanId;
-    }
-
-    public double getInterestRate() {
-        return interestRate;
-    }
-
-    public boolean disburseLoan() {
-        boolean isSuccess = loanAccount.processTransaction(loanAmount,"DL");//Change to disburse loan
-        startYear = Year.now().getValue();
-        return isSuccess;
-    }
-
-    public boolean makePayment() {
-        if (Year.now().getValue() - startYear > period) {
-            //System.out.println("you exceeded loan payment date");
-            return false;
-        }
-        boolean temp = loanAccount.processTransaction(loanAmount + (loanAmount*(interestRate/100)),"PL");
-        return temp;
-    }
-
-    public void setStartYear(int startYear) {
-        this.startYear = startYear;
-    }
-
-    public int getStartYear() {
-        return startYear;
-    }
-
-    public int getPeriod() {
-        return period;
-    }
-
-    public double getLoanAmount(){
-        return loanAmount;
-    }
-
-    public void setLoanAmount(double loanAmount){
-        this.loanAmount=loanAmount;
-    }
-    public void setLoanAccount(Account loanAccount){
-        this.loanAccount=loanAccount;
+    public ArrayList<Loan> getTakenLoans() {
+        return takenLoans;
     }
 }
 

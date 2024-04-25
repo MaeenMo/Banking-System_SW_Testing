@@ -27,8 +27,8 @@ public class TransactionTest {
     @DisplayName("Test Get Transactions Details For t1")
     public void testGetTransactionDetailsT1(){
         assertEquals("Transaction ID: " + t1.getTransactionId() + ", Date: " + t1.getTransactionDate() +
-                             ", From: " + t1.getTransactionFromAccountId() + ", To: " + t1.getTransactionToAccountId() +
-                             ", Amount: " + t1.getTransactionAmount()
+                             ", From: " + t1.getFromAccountId() + ", To: " + t1.getToAccountId() +
+                             ", Amount: " + t1.getAmount()
                             ,t1.getTransactionDetails(t1.getTransactionType()));
     }
 
@@ -36,8 +36,8 @@ public class TransactionTest {
     @DisplayName("Test Get Transactions Details For t2")
     public void testGetTransactionDetailsT2(){
         assertEquals("Transaction ID: " + t2.getTransactionId() + ", Date: " + t2.getTransactionDate() +
-                        ", From: " + t2.getTransactionFromAccountId() +
-                        ", Amount: " + t2.getTransactionAmount()
+                        ", From: " + t2.getFromAccountId() +
+                        ", Amount: " + t2.getAmount()
                 ,t2.getTransactionDetails(t2.getTransactionType()));
     }
 }

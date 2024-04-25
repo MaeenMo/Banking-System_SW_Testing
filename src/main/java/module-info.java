@@ -7,6 +7,6 @@ module org.example {
     requires com.jfoenix;
     requires java.desktop;
 
-    opens org.example to javafx.fxml;
+    opens org.example to javafx.fxml, javafx.base;
     exports org.example;
 }

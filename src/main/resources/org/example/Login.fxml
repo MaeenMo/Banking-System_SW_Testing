@@ -19,7 +19,10 @@
 <AnchorPane fx:id="anchorPane" prefHeight="720.0" prefWidth="1280.0" style="-fx-background-radius: 20; -fx-background-size: 1280 720;" stylesheets="@styling.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.LoginController">
    <children>
       <Button fx:id="focus" layoutX="6.0" layoutY="8.0" mnemonicParsing="false" prefHeight="0.0" prefWidth="3.0" style="-fx-background-color: transparent;" />
-      <ImageView fx:id="imgView" fitHeight="720.0" fitWidth="1280.0" pickOnBounds="true" preserveRatio="true" />
+      <ImageView fx:id="imgView" fitHeight="720.0" fitWidth="1280.0" pickOnBounds="true">
+         <image>
+            <Image url="@loginBG.jpg" />
+         </image></ImageView>
       <Rectangle arcHeight="40.0" arcWidth="40.0" height="720.0" opacity="0.7" stroke="BLACK" strokeType="INSIDE" width="1280.0" />
       <HBox fx:id="hbox" prefHeight="46.0" prefWidth="1280.0" style="-fx-background-radius: 10 10 0 0;" />
       <Button contentDisplay="CENTER" layoutX="1243.0" layoutY="16.0" minHeight="18.0" minWidth="16.0" mnemonicParsing="false" onAction="#closeWindow" prefHeight="20.0" prefWidth="16.0" style="-fx-background-color: transparent;" textAlignment="CENTER" textFill="WHITE">

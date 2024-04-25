@@ -34,7 +34,7 @@ public class Alert {
 
         JFXButton ok = new JFXButton("OK");
         ok.requestFocus();
-        ok.setStyle("-fx-background-radius:7;-fx-focus-color:transparent;-fx-faint-focus-color:transparent;-fx-cursor:hand");
+        ok.setStyle("-fx-background-radius:7;-fx-focus-color:transparent;-fx-faint-focus-color:transparent;-fx-cursor:hand;-fx-border-color: black;-fx-border-width: 1px;-fx-border-radius: 7px");
         ok.setPadding(new Insets(10,20,10,20));
         ok.setOnAction(e -> alertStage.close());
 

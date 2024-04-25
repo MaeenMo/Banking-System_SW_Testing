@@ -1,19 +1,20 @@
 package org.example;
 
 import com.jfoenix.controls.JFXButton;
-import com.jfoenix.controls.JFXCheckBox;
 import com.jfoenix.controls.JFXComboBox;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
@@ -21,21 +22,17 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
 import javafx.scene.text.Text;
+import javafx.util.Callback;
 import javafx.util.StringConverter;
 import javafx.util.converter.DoubleStringConverter;
-import javafx.util.converter.IntegerStringConverter;
 
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.function.UnaryOperator;
 
 public class HomeController {
@@ -108,6 +105,8 @@ public class HomeController {
     @FXML
     Pane viewTransacPane;
     @FXML
+    TableView<Transaction> transacTableView;
+    @FXML
     Pane disburseLoanPane;
     @FXML
     TextField disbAmount;
@@ -120,13 +119,14 @@ public class HomeController {
     @FXML
     Pane viewLoansPane;
     @FXML
+    TableView<Loan> loansTableView;
+    @FXML
     Text accBalance1;
     @FXML
     Text accBalance2;
     @FXML
     Button logoutBtn;
-    SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-    Date date = new Date();
+
     Scene loginScene;
     @FXML
     public void closeWindow(){
@@ -414,6 +414,66 @@ public class HomeController {
 
     public void transactionsView(ActionEvent actionEvent) {
         setvisible("viewTransac");
+        ObservableList<Transaction> transactionsData = FXCollections.observableArrayList(CurrentUser.getTransactionList());
+        transacTableView.setItems(transactionsData);
+
+    }
+    private void createTransactionsViewTable(){
+        // Create columns
+        TableColumn<Transaction, String> idColumn = new TableColumn<>("Transaction ID");
+        TableColumn<Transaction, String> typeColumn = new TableColumn<>("Transaction Type");
+        TableColumn<Transaction, String> amountColumn = new TableColumn<>("Amount");
+        TableColumn<Transaction, String> dateColumn = new TableColumn<>("Transaction Date");
+    //        TableColumn<Transaction, String> descriptionColumn = new TableColumn<>("Description");
+
+    // Set up value factories
+        idColumn.setCellValueFactory(new PropertyValueFactory<>("transactionId"));
+        typeColumn.setCellValueFactory(cellData -> {
+            String type = cellData.getValue().getTransactionType();
+            return switch (type) {
+                case "D" -> new SimpleStringProperty("Deposit");
+                case "W" -> new SimpleStringProperty("Withdraw");
+                case "T" -> {
+                    if (cellData.getValue().getFromAccountId().equals(CurrentUser.getAccountId()))
+                        yield new SimpleStringProperty("Transfer To " + cellData.getValue().getToAccountId());
+                    if (cellData.getValue().getToAccountId().equals(CurrentUser.getAccountId()))
+                        yield new SimpleStringProperty("Transfer From " + cellData.getValue().getFromAccountId());
+                    yield new SimpleStringProperty("Unknown");
+                }
+                case "DL" -> new SimpleStringProperty("Disburse Loan");
+                case "PL" -> new SimpleStringProperty("Pay Loan");
+                default -> new SimpleStringProperty("Unknown");
+            };
+        });
+        amountColumn.setCellValueFactory(cellData -> {
+            Transaction transaction = cellData.getValue();
+            String transactionType = transaction.getTransactionType();
+            double amount = transaction.getAmount();
+
+            if ("D".equals(transactionType) || "DL".equals(transactionType)) {
+                return new SimpleStringProperty("+" + amount);
+            } else if ("W".equals(transactionType) || "PL".equals(transactionType)) {
+                return new SimpleStringProperty("-" + amount);
+            } else if ("T".equals(transactionType)){
+                if (transaction.getFromAccountId().equals(CurrentUser.getAccountId()))
+                    return new SimpleStringProperty("-" + amount);
+                else
+                    return new SimpleStringProperty("+" + amount);
+            } else {
+                return new SimpleStringProperty(String.valueOf(amount));
+            }
+        });
+        dateColumn.setCellValueFactory(new PropertyValueFactory<>("transactionDate"));
+    //        descriptionColumn.setCellValueFactory(new PropertyValueFactory<>("description"));
+
+    // Add columns to table
+        transacTableView.getColumns().add(idColumn);
+        transacTableView.getColumns().add(amountColumn);
+        transacTableView.getColumns().add(typeColumn);
+        transacTableView.getColumns().add(dateColumn);
+        setTableStyle(transacTableView);
+        transacTableView.setClip(roundedListview(985, 410));
+    //        transacTableView.getColumns().add(descriptionColumn);
     }
 
     public void deposit(ActionEvent actionEvent) {
@@ -490,12 +550,73 @@ public class HomeController {
 
     public void viewLoansView(ActionEvent actionEvent) {
         setvisible("viewloans");
+        ObservableList<Loan> loansData = FXCollections.observableArrayList(CurrentUser.getTakenLoans());
+        loansTableView.setItems(loansData);
     }
+    public void createLoansViewTable(){
+        // Define the columns for loan details
+        TableColumn<Loan, String> loanIdColumn = new TableColumn<>("Loan ID");
+        loanIdColumn.setCellValueFactory(new PropertyValueFactory<>("loanId"));
 
-    public void payLoan(ActionEvent actionEvent) {
-//        if (isSuccess) payLoanErrMsg.setText("Error! Insufficient Balance"); // Error: Pay Loan (From Return False)
-//        else payLoanErrMsg.setText("Loan Paid Successfully"); // Success Pay Loan (From Return True)
-        updateBalance();
+        TableColumn<Loan, Double> loanAmountColumn = new TableColumn<>("Loan Amount");
+        loanAmountColumn.setCellValueFactory(new PropertyValueFactory<>("loanAmount"));
+
+        TableColumn<Loan, Integer> periodColumn = new TableColumn<>("Period");
+        periodColumn.setCellValueFactory(new PropertyValueFactory<>("period"));
+
+        TableColumn<Loan, Integer> startYearColumn = new TableColumn<>("Start Year");
+        startYearColumn.setCellValueFactory(new PropertyValueFactory<>("startYear"));
+
+        TableColumn<Loan, Double> interestRateColumn = new TableColumn<>("Interest Rate");
+        interestRateColumn.setCellValueFactory(new PropertyValueFactory<>("interestRate"));
+
+        // Create the "Pay Loan" column
+        TableColumn<Loan, Void> payLoanColumn = new TableColumn<>("Pay Loan");
+        Callback<TableColumn<Loan, Void>, TableCell<Loan, Void>> cellFactory = new Callback<>() {
+            @Override
+            public TableCell<Loan, Void> call(final TableColumn<Loan, Void> param) {
+                final TableCell<Loan, Void> cell = new TableCell<>() {
+                    private final JFXButton btn = new JFXButton("Pay Loan");
+                    {
+                        btn.getStyleClass().add("ButtonG");
+                        btn.setOnAction((ActionEvent event) -> {
+                            Loan loan = getTableView().getItems().get(getIndex());
+                            // Call the method to pay the loan here
+                            if(CurrentUser.payLoan(loan.getLoanId())){
+                                updateBalance();
+                                viewLoansView(event);// Refresh the table view
+                                new Alert("Info","Loan Paid Successfully","green");
+                            }else {
+                                new Alert("Error","Error! Insufficient Balance","red");
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void updateItem(Void item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (empty) {
+                            setGraphic(null);
+                        } else {
+                            setGraphic(btn);
+                            setAlignment(Pos.CENTER);
+                        }
+                    }
+                };
+                return cell;
+            }
+        };
+        payLoanColumn.setCellFactory(cellFactory);
+
+        // Add the columns to the TableView
+        loansTableView.getColumns().add(loanIdColumn);
+        loansTableView.getColumns().add(loanAmountColumn);
+        loansTableView.getColumns().add(periodColumn);
+        loansTableView.getColumns().add(startYearColumn);
+        loansTableView.getColumns().add(interestRateColumn);
+        loansTableView.getColumns().add(payLoanColumn);
+        setTableStyle(loansTableView);
+        loansTableView.setClip(roundedListview(985, 410));
     }
 
 //    public static class HBoxCell extends HBox {
@@ -602,6 +723,36 @@ public class HomeController {
         label.setText(msg);
         label.setStyle("-fx-text-fill:"+color);
     }
+    private void setTableStyle(TableView tableView) {
+//        tableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        double columnWidth = tableView.getPrefWidth() / tableView.getColumns().size();
+        for (Object column : tableView.getColumns()) {
+            ((TableColumn<?, ?>) column).setResizable(false);
+            ((TableColumn<?, ?>) column).setReorderable(false);
+            ((TableColumn<?, ?>) column).setSortable(false);
+            ((TableColumn<?, ?>) column).setPrefWidth(columnWidth);
+            if (!((TableColumn<Object, Object>) column).getText().equals("Pay Loan")) {
+                // Center the content of the column
+                ((TableColumn<Object, Object>) column).setCellFactory(tc -> {
+                    TableCell<Object, Object> cell = new TableCell<>() {
+                        @Override
+                        protected void updateItem(Object item, boolean empty) {
+                            super.updateItem(item, empty);
+                            if (empty || item == null) {
+                                setText(null);
+                            } else {
+                                setText(item.toString());
+                                setAlignment(Pos.CENTER);
+                            }
+                        }
+                    };
+                    return cell;
+                });
+            }
+        }
+    }
+//        tableColumn.setStyle("-fx-background-color:transparent;-fx-border-color:transparent;-fx-table-cell-border-color:transparent;-fx-table-header-border-color:transparent;");
+
     private void setvisible(String window){
         switch (window) {
             case "transaction" -> {
@@ -687,6 +838,8 @@ public class HomeController {
         }
         initialzeLoans();
         takenLoan.getItems().addAll("1 Year with 10% interest","3 Years With 15% interest","5 Years with 20% interest","10 Years with 30% interest");
+        createTransactionsViewTable();
+        createLoansViewTable();
         setvisible("none");
         UnaryOperator<TextFormatter.Change> filter1 = change -> {
             String text = change.getControlNewText();
@@ -708,7 +861,6 @@ public class HomeController {
             }
             return null;
         };
-
         TextFormatter<Double> amount1 = new TextFormatter<>(new DoubleStringConverter(), null, filter1);
         TextFormatter<Double> amount2 = new TextFormatter<>(new DoubleStringConverter(), null, filter1);
         TextFormatter<Double> amount3 = new TextFormatter<>(new DoubleStringConverter(), null, filter1);
@@ -740,7 +892,7 @@ public class HomeController {
             stage.setY(event.getScreenY() - yOffset);
         });
         if (imgView != null){
-            imgView.setImage(new Image("file:src/main/resources/org/example/loginBG.jpg",false));
+            imgView.setImage(new Image("file:src/main/resources/org/example/side1.png",false));
             Rectangle clip = new Rectangle();
             clip.setWidth(1280.0);
             clip.setHeight(750);
