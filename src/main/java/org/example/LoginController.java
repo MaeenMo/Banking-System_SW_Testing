@@ -154,8 +154,6 @@ public class LoginController {
         }
     }
     public void initiateAccounts(){
-        bank.addAccount(new Account("0", "7mada", 10000.0, "0"));
-        bank.addAccount(new Account("1", "Omar", 1000000.0, "1"));
         bank.addAccount(new Account("12345678", "John Doe", 1000.0, "pass1"));
         bank.addAccount(new Account("23456789", "Jane Smith", 1500.0, "pass2"));
         bank.addAccount(new Account("34567890", "Alice Johnson", 2000.0, "pass3"));
