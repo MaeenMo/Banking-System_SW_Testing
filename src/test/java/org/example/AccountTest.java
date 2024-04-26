@@ -26,16 +26,6 @@ public class AccountTest {
         System.out.println("------------------------\n");
     }
 
-//    @Order(1)
-//    @DisplayName("Test Deposit to User Account")
-//    @ParameterizedTest
-//    @ValueSource(doubles = {100, 200, 300, 400})
-//    public void testDeposit(double a) {
-//        double oldBalance = a1.getBalance();
-//        a1.processTransaction(a, "D");
-//        assertEquals(oldBalance + a, a1.getBalance());
-//    }
-
     @Order(1)
     @Test
     @DisplayName("Test Deposit to User Account")
