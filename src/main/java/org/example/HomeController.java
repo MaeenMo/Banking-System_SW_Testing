@@ -34,25 +34,9 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.function.UnaryOperator;
+import javafx.util.StringConverter;
 
 public class HomeController {
-    public static boolean isNumeric(String strNum) {
-        if (strNum == null) {
-            return false;
-        }
-        try {
-            double d = Double.parseDouble(strNum);
-        } catch (NumberFormatException nfe) {
-            return false;
-        }
-        return true;
-    }
-    Button tempBtnIgnore = new Button();
-    Label tempLabelIgnore = new Label();
-    Button tempBtnIgnoreRent = new Button();
-    Button tempBtnIgnoreRemove = new Button();
-    String tempStrIgnore;
-    String tempStrIgnore1;
     public static Account CurrentUser;
     @FXML
     AnchorPane anchorPane;
@@ -128,6 +112,27 @@ public class HomeController {
     Button logoutBtn;
 
     Scene loginScene;
+
+    public class CustomDoubleStringConverter extends StringConverter<Double> {
+        @Override
+        public String toString(Double value) {
+            if (value == null) {
+                return "";
+            }
+            // Convert the double to a string with rounding to 2 decimal places
+            return String.format("%.2f", value);
+        }
+
+        @Override
+        public Double fromString(String string) {
+            if (string == null || string.trim().isEmpty()) {
+                return null;
+            }
+            // Parse the string to a double
+            return Double.parseDouble(string);
+        }
+    }
+
     @FXML
     public void closeWindow(){
         System.exit(0);
@@ -188,190 +193,6 @@ public class HomeController {
     private void defaultStyle(TextField field){
         field.setStyle("-fx-background-radius:20;-fx-border-radius:20;-fx-focus-color:transparent;-fx-faint-focus-color:transparent;");
     }
-//    public void hboxCell(ListView<HBoxCell> listView, String btnlbl){
-//        for(Node entity: listView.getItems()){
-//            for(Node nested: ((HBoxCell)entity).getChildren()){
-//                if(nested.getClass() == tempLabelIgnore.getClass()){
-//                    tempStrIgnore = ((Label) nested).getText();
-//                }
-//                else if(nested.getClass() == tempBtnIgnore.getClass()){
-//                    if(((Button) nested).getText().equals(btnlbl)){
-//                        tempBtnIgnoreRent = ((Button) nested);
-//                        setEvent(tempStrIgnore, "",tempBtnIgnoreRent, tempBtnIgnoreRemove);
-//                    }
-//                }
-//            }
-//        }
-//        for(Node entity: listView.getItems() ){
-//            for(Node nested: ((HBoxCell)entity).getChildren()){
-//                if(nested.getClass() == tempLabelIgnore.getClass()){
-//                    tempStrIgnore = ((Label) nested).getText();
-//                } else if(nested.getClass() == tempBtnIgnore.getClass()) {
-//                    if (((Button) nested).getText().equals("Remove")) {
-//                        tempBtnIgnoreRemove = ((Button) nested);
-//                        setEvent(tempStrIgnore, "",tempBtnIgnoreRent, tempBtnIgnoreRemove);
-//                    }
-//                }
-//            }
-//        }
-//    }
-//    public void hboxCell(ListView<HBoxCell> listView){
-//        int i=0;
-//        for(Node entity: listView.getItems() ){
-//            for(Node nested: ((HBoxCell)entity).getChildren()){
-//                if(nested.getClass() == tempLabelIgnore.getClass()){
-//                    if (i % 2 == 0){
-//                        tempStrIgnore1 = ((Label) nested).getText();
-//                    }else tempStrIgnore = ((Label) nested).getText();
-//                } else if(nested.getClass() == tempBtnIgnore.getClass()) {
-//                    if (((Button) nested).getText().equals("✔")) {
-//                        tempBtnIgnoreRent = ((Button) nested);
-//                        setEvent(tempStrIgnore,tempStrIgnore1,tempBtnIgnoreRent, tempBtnIgnoreRemove);
-//                    }
-//                }
-//                i++;
-//            }
-//        }
-//        i=0;
-//        for(Node entity: listView.getItems() ){
-//            for(Node nested: ((HBoxCell)entity).getChildren()){
-//                if(nested.getClass() == tempLabelIgnore.getClass()){
-//                    if (i % 2 == 0){
-//                        tempStrIgnore1 = ((Label) nested).getText();
-//                    }else tempStrIgnore = ((Label) nested).getText();
-//                } else if(nested.getClass() == tempBtnIgnore.getClass()) {
-//                    if (((Button) nested).getText().equals("X")) {
-//                        tempBtnIgnoreRemove = ((Button) nested);
-//                        setEvent(tempStrIgnore, tempStrIgnore1,tempBtnIgnoreRent, tempBtnIgnoreRemove);
-//                    }
-//                }
-//                i++;
-//            }
-//        }
-//    }
-//    public void setEvent(String lbl,String lbl1, Button btn1, Button btn2){
-//        if (btn1.getText().equals("Edit")){
-//            btn1.setOnAction(e -> {
-//                setvisible("none");
-//                clearFields();
-//                setvisible("edit");
-//                focusBtn.requestFocus();
-//                String[] data;
-//                userNameField.setText(lbl);
-//                showPassBtn.setVisible(true);
-//                hideIco.setVisible(true);
-//                showPassBtn.setVisible(true);
-//                try {
-//                    data = User.requestInfo(lbl);
-//                } catch (IOException ex) {
-//                    throw new RuntimeException(ex);
-//                }
-//                passField.setText(data[1]);
-//
-//                firstnameField.setText(data[3]);
-//                type.setValue(data[2]);
-//                lastnameField.setText(data[4]);
-//                addressField.setText(data[5]);
-//                cellphoneField.setText(data[6]);
-//                emailField.setText(data[7]);
-//                if(data[8].equals("true"))
-//                    blockedCB.setSelected(true);
-//                else
-//                    blockedCB.setSelected(false);
-//                saveBtn.setOnAction(y -> {
-//                    userEdited.setText("");
-//                    if (User.validate(userNameField,usernameErr,passField,passFieldShown,passErr,type.getValue(),typeErr,firstnameField,firstnameErr,lastnameField,lastnameErr,emailField,emailErr,cellphoneField,cellphoneErr,addressField,addressErr)){
-//                        try {
-//                            Type = type.getValue().toString();
-//                        } catch (NullPointerException | NumberFormatException exc) {
-//                        }
-//                        try {
-//                            Object[] newData = {
-//                                    userNameField.getText(),
-//                                    passField.getText(),
-//                                    type.getValue().toString(),
-//                                    firstnameField.getText(),
-//                                    lastnameField.getText(),
-//                                    addressField.getText(),
-//                                    cellphoneField.getText(),
-//                                    emailField.getText(),
-//                                    blockedCB.isSelected(),
-//                            };
-//                            if(User.checkChange(newData, data)){
-//                                System.out.println(" EDIT BUTTON PRESSED");
-//                                if(User.getUserName().equals(data[0])){
-//                                    if(new Alert().Alert("Hold it right there!", "Applying these changes will log you out, are you sure you want to continue?", "red", "Yes", "No")){
-//                                        librarian.removeUser(lbl);
-//                                        librarian.addUser(new User(((String)newData[0]), ((String)newData[1]), ((String)newData[2]), ((String)newData[3]), ((String)newData[4]), ((String)newData[5]), ((String)newData[6]), ((String)newData[7]), ((Boolean)newData[8])).getUserData());
-//                                        logoutBtn.fire();
-//                                    }
-//                                }
-//                                else{
-//                                    librarian.removeUser(lbl);
-//                                    librarian.addUser(new User(((String)newData[0]), ((String)newData[1]), ((String)newData[2]), ((String)newData[3]), ((String)newData[4]), ((String)newData[5]), ((String)newData[6]), ((String)newData[7]), ((Boolean)newData[8])).getUserData());
-//                                    userEdited.setText("");
-//                                    userEdited.setText("Info updated");
-//                                    userEdited.setStyle("-fx-text-fill:limegreen");
-//                                }
-//
-//                            }
-//                            else{
-//                                userEdited.setText("Please update one of the fields");
-//                                userEdited.setStyle("-fx-text-fill:red");
-//                            }
-//
-//                        } catch( IOException | NumberFormatException exc) {
-//                        }
-//                    }
-//                });
-//            });
-//            btn2.setOnAction(e ->{
-//                if(User.getUserName().equals(lbl)){
-//                    if (new Alert().Alert("Warning","This account will be deleted and you will be logged out.\nAre you sure you want to continue?","red","Yes","No")){
-//                        librarian.removeUser(lbl);
-//                        logoutBtn.fire();
-//                    }
-//                }else {
-//                    if (new Alert().Alert("Warning","Are you sure you want to delete "+ lbl +" ?","red","Yes","No")){
-//                        librarian.removeUser(lbl);
-//                    }
-//                    if (!searchField.getText().equals("") ) {
-//                        searchBtn.fire();
-//                    }else{
-//                        bookListview.setItems(null);
-//                        displayUsers();
-//                    }
-//                }
-//            });
-//        }else if(btn1.getText().equals("Rent")){
-//            btn1.setOnAction(e->{
-//                if (!book.checkRent(User.getUserName(),lbl)){
-//                    Book.rentBook(lbl);
-//                    new Alert("Info",lbl+" was added to your order list","green");
-//                }
-//            });
-//            btn2.setOnAction(e -> {
-//                if (new Alert().Alert("Warning","Are you sure you want to delete "+ lbl +" ?","red","Yes","No")){
-//                    Book.removeBook(lbl);
-//                }
-//                if (!searchField.getText().equals("") ) {
-//                    searchBtn.fire();
-//                }else{
-//                    bookListview.setItems(null);
-//                    displayBooks();
-//                }
-//            });
-//        }else if(btn1.getText().equals("✔")){
-//            btn1.setOnAction(e->{
-//                Librarian.acceptRequest(lbl1,lbl);
-//                orderList();
-//            });
-//            btn2.setOnAction(e->{
-//                Librarian.denyRequest(lbl1,lbl);
-//                orderList();
-//            });
-//        }
-//    }
 
     public void updateBalance(){
         BigDecimal result= BigDecimal.valueOf(CurrentUser.getBalance());
@@ -424,7 +245,6 @@ public class HomeController {
         TableColumn<Transaction, String> typeColumn = new TableColumn<>("Transaction Type");
         TableColumn<Transaction, String> amountColumn = new TableColumn<>("Amount");
         TableColumn<Transaction, String> dateColumn = new TableColumn<>("Transaction Date");
-    //        TableColumn<Transaction, String> descriptionColumn = new TableColumn<>("Description");
 
     // Set up value factories
         idColumn.setCellValueFactory(new PropertyValueFactory<>("transactionId"));
@@ -435,9 +255,9 @@ public class HomeController {
                 case "W" -> new SimpleStringProperty("Withdraw");
                 case "T" -> {
                     if (cellData.getValue().getFromAccountId().equals(CurrentUser.getAccountId()))
-                        yield new SimpleStringProperty("Transfer To " + cellData.getValue().getToAccountId());
+                        yield new SimpleStringProperty("Transfer To " + Bank.getAccount(cellData.getValue().getToAccountId()).getAccountOwner());
                     if (cellData.getValue().getToAccountId().equals(CurrentUser.getAccountId()))
-                        yield new SimpleStringProperty("Transfer From " + cellData.getValue().getFromAccountId());
+                        yield new SimpleStringProperty("Transfer From " + Bank.getAccount(cellData.getValue().getFromAccountId()).getAccountOwner());
                     yield new SimpleStringProperty("Unknown");
                 }
                 case "DL" -> new SimpleStringProperty("Disburse Loan");
@@ -451,29 +271,27 @@ public class HomeController {
             double amount = transaction.getAmount();
 
             if ("D".equals(transactionType) || "DL".equals(transactionType)) {
-                return new SimpleStringProperty("+" + amount);
+                return new SimpleStringProperty("+" + String.format("%.2f", amount));
             } else if ("W".equals(transactionType) || "PL".equals(transactionType)) {
-                return new SimpleStringProperty("-" + amount);
+                return new SimpleStringProperty("-" + String.format("%.2f", amount));
             } else if ("T".equals(transactionType)){
                 if (transaction.getFromAccountId().equals(CurrentUser.getAccountId()))
-                    return new SimpleStringProperty("-" + amount);
+                    return new SimpleStringProperty("-" + String.format("%.2f", amount));
                 else
-                    return new SimpleStringProperty("+" + amount);
+                    return new SimpleStringProperty("+" + String.format("%.2f", amount));
             } else {
-                return new SimpleStringProperty(String.valueOf(amount));
+                return new SimpleStringProperty(String.format("%.2f", amount));
             }
         });
         dateColumn.setCellValueFactory(new PropertyValueFactory<>("transactionDate"));
-    //        descriptionColumn.setCellValueFactory(new PropertyValueFactory<>("description"));
 
-    // Add columns to table
+        // Add columns to table
         transacTableView.getColumns().add(idColumn);
         transacTableView.getColumns().add(amountColumn);
         transacTableView.getColumns().add(typeColumn);
         transacTableView.getColumns().add(dateColumn);
         setTableStyle(transacTableView);
         transacTableView.setClip(roundedListview(985, 410));
-    //        transacTableView.getColumns().add(descriptionColumn);
     }
 
     public void deposit(ActionEvent actionEvent) {
@@ -481,9 +299,9 @@ public class HomeController {
             labelMsg(depErrMsg,"Please Enter An Amount","red");
         }
         else {
-            boolean isSuccess = CurrentUser.processTransaction(Double.parseDouble(depAmount.getText()),"D");
-            if (isSuccess) labelMsg(depErrMsg,"Successfully Deposited","limegreen");
-            else labelMsg(depErrMsg,"Invalid Amount","red");
+            String isSuccess = CurrentUser.processTransaction(Double.parseDouble(depAmount.getText()),"D");
+            if (isSuccess==null) labelMsg(depErrMsg,"Successfully Deposited","limegreen");
+            else labelMsg(depErrMsg,isSuccess,"red");
             updateBalance();
             depAmount.clear();
         }
@@ -494,9 +312,9 @@ public class HomeController {
             labelMsg(withErrMsg,"Please Enter An Amount","red");
         }
         else {
-            boolean isSuccess = CurrentUser.processTransaction(Double.parseDouble(withAmount.getText()), "W");
-            if (isSuccess) labelMsg(withErrMsg, "Successfully Withdrawn", "limegreen");
-            else labelMsg(withErrMsg, "Error! Couldn't Complete the Withdraw", "red");
+            String isSuccess = CurrentUser.processTransaction(Double.parseDouble(withAmount.getText()), "W");
+            if (isSuccess == null) labelMsg(withErrMsg, "Successfully Withdrawn", "limegreen");
+            else labelMsg(withErrMsg, isSuccess, "red");
             updateBalance();
             withAmount.clear();
         }
@@ -513,14 +331,13 @@ public class HomeController {
             labelMsg(transErrMsg,"Please Enter the Destination Account","red");
         }
         else {
-            boolean isSuccess = CurrentUser.processTransaction(Bank.getAccount(destAcc.getText()),Double.parseDouble(transAmount.getText()),"T");
-            if (isSuccess) labelMsg(transErrMsg,"Successfully Transferred","limegreen");
-            else labelMsg(transErrMsg,"Error! Couldn't Complete the Transfer","red");
+            String isSuccess = CurrentUser.processTransaction(Bank.getAccount(destAcc.getText()),Double.parseDouble(transAmount.getText()),"T");
+            if (isSuccess == null) labelMsg(transErrMsg,"Successfully Transferred","limegreen");
+            else labelMsg(transErrMsg,isSuccess,"red");
             updateBalance();
             transAmount.clear();
             destAcc.clear();
         }
-
     }
 
     public void disburseloanView(ActionEvent actionEvent) {
@@ -538,9 +355,9 @@ public class HomeController {
             labelMsg(disbLoanErrMsg,"Please Select Loan Type","red");
         }
         else {
-            boolean isSuccess = CurrentUser.takeLoan(getTakeLoanId(),Double.parseDouble(disbAmount.getText()));
-            if (isSuccess) labelMsg(disbLoanErrMsg,"Loan Taken Successfully","limegreen");
-            else labelMsg(disbLoanErrMsg,"Error! Couldn't Complete the Loan","red");
+            String isSuccess = CurrentUser.takeLoan(getTakeLoanId(),Double.parseDouble(disbAmount.getText()));
+            if (isSuccess==null) labelMsg(disbLoanErrMsg,"Loan Taken Successfully","limegreen");
+            else labelMsg(disbLoanErrMsg,isSuccess,"red");
             updateBalance();
             disbAmount.clear();
             takenLoan.getSelectionModel().clearSelection();
@@ -580,14 +397,14 @@ public class HomeController {
                     {
                         btn.getStyleClass().add("ButtonG");
                         btn.setOnAction((ActionEvent event) -> {
-                            Loan loan = getTableView().getItems().get(getIndex());
-                            // Call the method to pay the loan here
-                            if(CurrentUser.payLoan(loan.getLoanId())){
+                            String msg=CurrentUser.takenLoans.get(getIndex()).makePayment();
+                            if(msg==null){
                                 updateBalance();
                                 viewLoansView(event);// Refresh the table view
                                 new Alert("Info","Loan Paid Successfully","green");
-                            }else {
-                                new Alert("Error","Error! Insufficient Balance","red");
+                            }
+                            else {
+                                new Alert("Error",msg,"Red");
                             }
                         });
                     }
@@ -619,84 +436,6 @@ public class HomeController {
         loansTableView.setClip(roundedListview(985, 410));
     }
 
-//    public static class HBoxCell extends HBox {
-//        Label text = new Label();
-//        Label text1 = new Label();
-//        Button btn1 = new Button();
-//        Button btn2 = new Button();
-//        HBoxCell(String labelText, String buttonText1, String color1, String buttonText2, String color2, String type) {
-//            super();
-//            text.setStyle("-fx-font-size:21;-fx-font-weight:bold;");
-//            text.setText(labelText);
-//            text.setMaxWidth(Double.MAX_VALUE);
-//            HBox.setHgrow(text, Priority.ALWAYS);
-//            getStylesheets().add(getClass().getResource("styling.css").toExternalForm());
-//            this.getChildren().add(text);
-//            if (type.equals("Librarian")){
-//                btn2 = new Button();
-//                btnColor(btn2,color2);
-//                btn2.setText(buttonText2);
-//                btn2.setPadding(new Insets(4, 46, 4, 46));
-//                this.getChildren().add(btn2);
-//                HBox.setMargin(btn2, new Insets(0, 10, 0, 0));
-//                btnColor(btn1,color1);
-//                this.getChildren().add(btn1);
-//                btn1.setText(buttonText1);
-//                btn1.setPadding(new Insets(4, 30, 4, 30));
-//            }else {
-//                this.getChildren().add(btn1);
-//                btnColor(btn1,color1);
-//                btn1.setText(buttonText1);
-//                btn1.setPadding(new Insets(4,46,4,46));
-//            }
-//        }
-//        HBoxCell(String users, String books){
-//            super();
-//            Button confirm = new Button("✔");
-//            Button reject = new Button("X");
-//            btnColor(confirm,"99ff33");
-//            btnColor(reject,"ff4c33");
-//            confirm.setPadding(new Insets(5,10,5,10));
-//            reject.setPadding(new Insets(5,12,4,12));
-//            HBox.setMargin(confirm, new Insets(0, 10, 0, 0));
-//            text.setText(users);
-//            text1.setText(books);
-//            text.setStyle("-fx-font-size:20;");
-//            text1.setStyle("-fx-font-size:20");
-//            text.setMaxWidth(Double.MAX_VALUE);
-//            text1.setMaxWidth(Double.MAX_VALUE);
-//            HBox.setHgrow(text, Priority.ALWAYS);
-//            HBox.setHgrow(text1, Priority.ALWAYS);
-//            this.getChildren().addAll(text,text1,confirm,reject);
-//        }
-//        public void btnColor(Button btn,String color){
-//            switch (color) {
-//                case "crimson" -> btn.getStyleClass().add("ButtonR");
-//                case "limegreen" -> btn.getStyleClass().add("ButtonG");
-//                case "#FFC107" -> btn.getStyleClass().add("ButtonY");
-//                case "99ff33" -> btn.getStyleClass().add("orderBtn1");
-//                case "ff4c33" -> btn.getStyleClass().add("orderBtn2");
-//            }
-//        }
-//        HBoxCell(String labelText){
-//            super();
-//            text.setText(labelText);
-//            text.setStyle("-fx-font-size:21;-fx-font-weight:bold;-fx-alignment:center");
-//            text.setMaxWidth(Double.MAX_VALUE);
-//            HBox.setHgrow(text, Priority.ALWAYS);
-//            this.getChildren().add(text);
-//        }
-//        HBoxCell(String col1, String col2, int width){
-//            super();
-//            text.setText(col1);
-//            text1.setText(col2);
-//            text.setStyle("-fx-font-size:24;-fx-font-weight:bold;");
-//            text1.setStyle("-fx-font-size:24;-fx-font-weight:bold;");
-//            text.setMaxWidth((double) width/2);
-//            HBox.setHgrow(text, Priority.ALWAYS);
-//            this.getChildren().addAll(text,text1);
-//        }
-//    }
     public Rectangle roundedListview(int width, int height){
         Rectangle clip = new Rectangle();
         clip.setWidth(width);
@@ -724,7 +463,6 @@ public class HomeController {
         label.setStyle("-fx-text-fill:"+color);
     }
     private void setTableStyle(TableView tableView) {
-//        tableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         double columnWidth = tableView.getPrefWidth() / tableView.getColumns().size();
         for (Object column : tableView.getColumns()) {
             ((TableColumn<?, ?>) column).setResizable(false);
@@ -732,7 +470,6 @@ public class HomeController {
             ((TableColumn<?, ?>) column).setSortable(false);
             ((TableColumn<?, ?>) column).setPrefWidth(columnWidth);
             if (!((TableColumn<Object, Object>) column).getText().equals("Pay Loan")) {
-                // Center the content of the column
                 ((TableColumn<Object, Object>) column).setCellFactory(tc -> {
                     TableCell<Object, Object> cell = new TableCell<>() {
                         @Override
@@ -751,7 +488,6 @@ public class HomeController {
             }
         }
     }
-//        tableColumn.setStyle("-fx-background-color:transparent;-fx-border-color:transparent;-fx-table-cell-border-color:transparent;-fx-table-header-border-color:transparent;");
 
     private void setvisible(String window){
         switch (window) {
@@ -830,6 +566,7 @@ public class HomeController {
             }
         }
     }
+
     public void initialize(){
         if (CurrentUser != null) {
             usernameDisplay.setText(CurrentUser.getAccountOwner());
@@ -861,11 +598,11 @@ public class HomeController {
             }
             return null;
         };
-        TextFormatter<Double> amount1 = new TextFormatter<>(new DoubleStringConverter(), null, filter1);
-        TextFormatter<Double> amount2 = new TextFormatter<>(new DoubleStringConverter(), null, filter1);
-        TextFormatter<Double> amount3 = new TextFormatter<>(new DoubleStringConverter(), null, filter1);
-        TextFormatter<Double> amount4 = new TextFormatter<>(new DoubleStringConverter(), null, filter1);
-        TextFormatter<String> destAccID = new TextFormatter<>(new StringConverter<String>() {
+        TextFormatter<Double> amount1 = new TextFormatter<>(new CustomDoubleStringConverter(), null, filter1);
+        TextFormatter<Double> amount2 = new TextFormatter<>(new CustomDoubleStringConverter(), null, filter1);
+        TextFormatter<Double> amount3 = new TextFormatter<>(new CustomDoubleStringConverter(), null, filter1);
+        TextFormatter<Double> amount4 = new TextFormatter<>(new CustomDoubleStringConverter(), null, filter1);
+        TextFormatter<String> destAccID = new TextFormatter<>(new StringConverter<>() {
             @Override
             public String toString(String s) {
                 return s;

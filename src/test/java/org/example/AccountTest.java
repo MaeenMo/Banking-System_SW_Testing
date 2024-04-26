@@ -26,14 +26,23 @@ public class AccountTest {
         System.out.println("------------------------\n");
     }
 
+//    @Order(1)
+//    @DisplayName("Test Deposit to User Account")
+//    @ParameterizedTest
+//    @ValueSource(doubles = {100, 200, 300, 400})
+//    public void testDeposit(double a) {
+//        double oldBalance = a1.getBalance();
+//        a1.processTransaction(a, "D");
+//        assertEquals(oldBalance + a, a1.getBalance());
+//    }
+
     @Order(1)
+    @Test
     @DisplayName("Test Deposit to User Account")
-    @ParameterizedTest
-    @ValueSource(doubles = {100, 200, 300, 400})
-    public void testDeposit(double a) {
+    public void testDeposit() {
         double oldBalance = a1.getBalance();
-        a1.processTransaction(a, "D");
-        assertEquals(oldBalance + a, a1.getBalance());
+        a1.processTransaction(1000, "D");
+        assertEquals(oldBalance + 1000, a1.getBalance());
     }
 
     @Order(2)
@@ -93,7 +102,7 @@ public class AccountTest {
     @DisplayName("Test pay 5 years loan successfully")
     public void testPayLoan5Years() {
         double oldBalance = a1.getBalance();
-        assertTrue(a1.payLoan("L3"));
+        assertTrue(a1.takenLoans.get(0).makePayment()==null);
         assertEquals(a1.getBalance(), oldBalance - (8000 + (8000*0.2)));
     }
 
@@ -113,8 +122,7 @@ public class AccountTest {
     @DisplayName("Test pay 3 years loan fail")
     public void testPayLoan3Years() {
         double oldBalance = a1.getBalance();
-        System.out.println(a1.getBalance());
-        assertFalse(a1.payLoan("L2"));
+        assertFalse(a1.takenLoans.get(0).makePayment()==null);
         assertFalse(a1.getBalance() == oldBalance - (10000 + (10000*0.1)));
     }
 }

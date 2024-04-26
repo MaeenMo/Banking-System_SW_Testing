@@ -7,6 +7,7 @@ public class Bank {
     public static ArrayList<Account> accounts = new ArrayList<>();
     public static ArrayList<Transaction> transactions = new ArrayList<>();
     public static ArrayList<Loan> loans = new ArrayList<>();
+
     public void addAccount(Account account) {
         accounts.add(account);
     }
@@ -36,8 +37,6 @@ class Account {
     private String password;
     protected ArrayList<Transaction> transactionList = new ArrayList<>();
     protected ArrayList<Loan> takenLoans = new ArrayList<>();
-    SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-
 
     public Account(String accountId, String accountOwner, double initialBalance,String password) {
         this.accountId = accountId;
@@ -46,84 +45,67 @@ class Account {
         this.password=password;
     }
 
-    public boolean processTransaction(Account toAccount,double amount, String TransactionType) {
+    public String processTransaction(Account toAccount,double amount, String TransactionType) {
         if (this.getBalance() >= amount && this != toAccount) {
             if (amount > 0) {
                 balance -= amount;
                 toAccount.balance += amount;
-                Bank.transactions.add(new Transaction(this, toAccount, amount, formatter.format(new Date()), TransactionType));
+                Bank.transactions.add(new Transaction(this, toAccount, amount, new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(new Date()), TransactionType));
             } else {
-                return false;
+                return "Amount Value Must be More Than 0";
             }
         } else {
-            return false;
+            return "Couldn't Complete the Transfer. Insufficient Balance";
         }
-        return true;
+        return null;
     }
 
-    public boolean processTransaction(double amount, String transactionType) {
+    public String processTransaction(double amount, String transactionType) {
         if (transactionType.equals("D")){
             if (amount > 0) {
                 balance += amount;
-                Bank.transactions.add(new Transaction(this, amount, formatter.format(new Date()), transactionType));
+                Bank.transactions.add(new Transaction(this, amount, new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(new Date()), transactionType));
             } else {
-                return false;
+                return "Amount Value Must be More Than 0";
             }
         }
         else if (transactionType.equals("DL")){
             if (amount > 0) {
                 balance += amount;
-                Bank.transactions.add(new Transaction(this, amount, formatter.format(new Date()), transactionType));
+                Bank.transactions.add(new Transaction(this, amount, new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(new Date()), transactionType));
             } else {
-                return false;
+                return "Amount Value Must be More Than 0";
             }
         } else if (transactionType.equals("PL")){
             if (amount <= balance) {
                 balance -= amount;
-                Bank.transactions.add(new Transaction(this, amount, formatter.format(new Date()), transactionType));
+                Bank.transactions.add(new Transaction(this, amount, new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(new Date()), transactionType));
             } else {
-                return false;
+                return "Couldn't Pay Loan. Insufficient Balance";
             }
         } else{
             if (amount <= balance) {
                 balance -= amount;
-                Bank.transactions.add(new Transaction(this, amount, formatter.format(new Date()), transactionType));
+                Bank.transactions.add(new Transaction(this, amount, new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(new Date()), transactionType));
             } else {
-                return false;
+                return "Couldn't Complete the Withdraw. Insufficient Balance";
             }
         }
-        return true;
+        return null;
     }
 
-    public boolean takeLoan(String loanId, double loanAmount) {
-        for (Loan l: Bank.loans){
-            if(l.getLoanId().equals(loanId)){
+    public String takeLoan(String loanId, double loanAmount) {
+        for (Loan l : Bank.loans) {
+            if (l.getLoanId().equals(loanId)) {
                 l.setLoanAccount(this);
                 l.setLoanAmount(loanAmount);
-                takenLoans.add(l);
-                return l.disburseLoan();
+                String msg = l.disburseLoan();
+                if (msg == null)
+                    takenLoans.add(l);
+                return msg;
             }
         }
-        return false;
-    }
-
-    public boolean payLoan(String loanId) {
-        int found = -1;
-        for (Loan i:takenLoans){
-            if (i.getLoanId().equals(loanId)){
-                found = takenLoans.indexOf(i);
-                break;
-            }
-        }
-        if (found == -1){
-            return false;}
-        else{
-            if (takenLoans.get(found).makePayment()){
-                takenLoans.remove(found);
-                return true;
-            } else{
-                return false;}
-        }
+        return "Loan Not Found"; // unreachable
     }
 
     public double getBalance() {

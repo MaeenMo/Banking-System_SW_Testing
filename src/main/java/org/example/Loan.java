@@ -26,18 +26,22 @@ public class Loan {
         return interestRate;
     }
 
-    public boolean disburseLoan() {
-        boolean isSuccess = loanAccount.processTransaction(loanAmount,"DL");//Change to disburse loan
+    public String disburseLoan() {
+        String isSuccess = loanAccount.processTransaction(loanAmount,"DL");//Change to disburse loan
         startYear = Year.now().getValue();
         return isSuccess;
     }
 
-    public boolean makePayment() {
+    public String makePayment() {
         if (Year.now().getValue() - startYear > period) {
-            System.out.println("you exceeded loan payment date");
-            return false;
+            return "You Exceeded Loan Payment Date";
         }
-        return loanAccount.processTransaction(loanAmount + (loanAmount*(interestRate/100)),"PL");
+        String msg = loanAccount.processTransaction(loanAmount + (loanAmount*(interestRate/100)),"PL");
+        if (msg == null){
+            loanAccount.takenLoans.remove(this);
+            return msg;
+        } else
+            return msg;
     }
 
     public void setStartYear(int startYear) {
